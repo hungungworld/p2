@@ -34,7 +34,7 @@
             line-height: 1.7;
         }
 
-        /* 내비게이션 바 */
+        /* 내비게이션 바 (메뉴 제거 후 로고만 깔끔하게 배치) */
         navbar {
             display: flex;
             justify-content: space-between;
@@ -57,24 +57,6 @@
             gap: 8px;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 24px;
-            font-size: 0.95rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--accent);
-        }
-
         /* 배너 섹션 */
         .hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -91,9 +73,10 @@
 
         .hero p {
             font-size: 1.1rem;
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
             color: #94a3b8;
+            word-break: keep-all; /* 의미 단위 줄바꿈 최적화 */
         }
 
         /* 메인 컨테이너 */
@@ -533,27 +516,17 @@
 
         @media(max-width: 768px) {
             .hero h1 { font-size: 2.1rem; }
-            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 내비게이션 바 -->
+    <!-- 내비게이션 바 (메뉴 제거 완료) -->
     <navbar>
         <div class="logo"><i class="fa-solid fa-compass"></i> Copenhagen Hub</div>
-        <ul class="nav-links">
-            <li><a href="#course-box" class="active">나만의 코스 담기</a></li>
-            <li><a href="#landmarks">랜드마크</a></li>
-            <li><a href="#museums">박물관·미술관</a></li>
-            <li><a href="#outdoor">야외활동·공원·수영</a></li>
-            <li><a href="#markets">로컬 시장</a></li>
-            <li><a href="#shopping">빈티지·가구 쇼핑</a></li>
-            <li><a href="#food">맛집·카페 (★4.0+)</a></li>
-        </ul>
     </navbar>
 
-    <!-- 배너 섹션 -->
+    <!-- 배너 섹션 (줄바꿈 의미 단위 정리 완료) -->
     <header class="hero">
         <h1>코펜하겐 완벽 마스터 가이드</h1>
         <p>박물관, 미술관, 빈티지 샵, 가구 편집숍부터 구글 4.0+ 미식 맛집까지 직접 담아 나만의 동선을 짜보세요.</p>
@@ -1051,7 +1024,6 @@
 
             let totalHours = mySelectedCourse.reduce((sum, item) => sum + item.hours, 0);
             
-            // 하루 일정 기준 (약 7시간 기준 계산, 남는 시간에 따라 박/일 계산)
             let totalDays = Math.ceil(totalHours / 7);
             if (totalDays < 1) totalDays = 1;
             let nights = totalDays > 1 ? totalDays - 1 : 0;
@@ -1084,7 +1056,6 @@
             const timelineDiv = document.getElementById('itineraryTimeline');
             const timelineContent = document.getElementById('timelineContent');
 
-            // 일자별 그룹화 로직 (하루 최대 약 7시간 기준으로 스팟 배분)
             let days = [];
             let currentDayItems = [];
             let currentDayHours = 0;
@@ -1149,7 +1120,6 @@
         function downloadExcel() {
             if (mySelectedCourse.length === 0) return;
 
-            // 일자별 배분 계산 후 CSV 생성
             let days = [];
             let currentDayItems = [];
             let currentDayHours = 0;
