@@ -3,302 +3,645 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>완벽한 코펜하겐 로컬 여행 가이드</title>
+    <title>Copenhagen Hub | 나만의 맞춤 여행 코스 플래너</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
         }
 
         body {
-            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f7f6;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
         }
 
-        /* 네비게이션 바 */
-        nav {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 30px;
+        /* 내비게이션 바 */
+        navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px 8%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
-        nav .logo {
-            font-size: 1.2rem;
-            font-weight: bold;
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        nav ul {
+        .nav-links {
             display: flex;
             list-style: none;
-            gap: 20px;
+            gap: 30px;
         }
 
-        nav ul li a {
-            color: white;
+        .nav-links a {
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: var(--transition);
         }
 
-        nav ul li a:hover {
-            color: #1abc9c;
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
         }
 
-        /* 헤더 */
-        header {
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+        /* 히어로 섹션 */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             text-align: center;
-            padding: 100px 20px;
+            padding: 70px 20px;
         }
 
-        header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
-        header p {
+        .hero p {
             font-size: 1.1rem;
-            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #94a3b8;
         }
 
         /* 메인 컨테이너 */
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
+            max-width: 1200px;
+            margin: 40px auto;
             padding: 0 20px;
         }
 
-        section {
-            margin-bottom: 50px;
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        h2.section-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            border-bottom: 3px solid #1abc9c;
-            display: inline-block;
-            padding-bottom: 5px;
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
         }
 
-        /* 카드 그리드 */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .section-header p {
+            color: var(--text-light);
         }
 
-        .card {
+        /* 나의 코스 장바구니 위젯 */
+        .my-course-box {
             background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
+        .my-course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
+        .my-course-header h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .card-content {
+        .badge-count {
+            background: var(--accent);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .course-empty-msg {
+            color: var(--text-light);
+            font-style: italic;
+            text-align: center;
             padding: 20px;
         }
 
-        .card-content h3 {
-            margin-bottom: 8px;
-            color: #2c3e50;
+        .course-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .card-content p {
-            color: #666;
-            font-size: 0.9rem;
+        .course-item {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .course-item-info h4 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 3px;
+        }
+
+        .course-item-info span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .btn-remove {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-remove:hover {
+            background: #fecaca;
+        }
+
+        .course-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .btn-action {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-action:hover {
+            background: var(--accent-hover);
+        }
+
+        /* 동선 타임라인 결과 영역 */
+        .itinerary-timeline {
+            margin-top: 30px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .itinerary-timeline h4 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-step {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .timeline-step strong {
+            color: var(--accent);
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        /* 필터 탭 버튼 */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 10px 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* 카드 그리드 시스템 (사진 깨짐 방지 일러스트 비주얼 카드) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            transition: var(--transition);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .card-visual {
+            height: 180px;
+            background: linear-gradient(135deg, #38bdf8 0%, #0369a1 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-visual.culture {
+            background: linear-gradient(135deg, #34d399 0%, #047857 100%);
+        }
+
+        .card-visual.food {
+            background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
+        }
+
+        .card-visual i {
+            font-size: 2.8rem;
             margin-bottom: 10px;
         }
 
-        .tag {
-            display: inline-block;
-            background: #e1f5fe;
-            color: #0288d1;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
+        .card-visual h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
         }
 
-        /* 리스트 스타일 섹션 (교통, 코스 등) */
-        .info-box {
-            background: white;
+        .badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+
+        .card-body {
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .info-box ul {
-            padding-left: 20px;
-            color: #444;
+        .card-body h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 8px;
         }
 
-        .info-box li {
-            margin-bottom: 12px;
+        .card-body p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
         }
 
-        .info-box strong {
-            color: #2c3e50;
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+        }
+
+        .btn-add {
+            background: #f0f9ff;
+            color: var(--accent);
+            border: 1px solid #bae6fd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-add:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-add.added {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        /* 지도 섹션 */
+        .map-section {
+            margin-top: 80px;
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        .map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         /* 푸터 */
         footer {
             text-align: center;
-            padding: 30px;
-            background-color: #2c3e50;
-            color: white;
-            margin-top: 50px;
+            padding: 40px;
+            background: #090d16;
+            color: #64748b;
+            margin-top: 80px;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media(max-width: 768px) {
+            .hero h1 { font-size: 2.1rem; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 네비게이션 바 -->
-    <nav>
-        <div class="logo">🇩🇰 Copenhagen Guide</div>
-        <ul>
-            <li><a href="#transport">교통</a></li>
-            <li><a href="#attractions">관광명소</a></li>
-            <li><a href="#culture">문화·수영·공원</a></li>
-            <li><a href="#food">맛집·카페</a></li>
-            <li><a href="#course">추천 코스</a></li>
+    <!-- 내비게이션 바 -->
+    <navbar>
+        <div class="logo"><i class="fa-solid fa-compass"></i> Copenhagen Hub</div>
+        <ul class="nav-links">
+            <li><a href="#course-box" class="active">나만의 코스 & 동선</a></li>
+            <li><a href="#attractions">명소 & 활동</a></li>
+            <li><a href="#map-section">실시간 지도</a></li>
         </ul>
-    </nav>
+    </navbar>
 
-    <!-- 헤더 -->
-    <header>
-        <h1>Live Like a Local in Copenhagen</h1>
-        <p>북유럽 감성, 북극해 수영, 자전거 로드트립까지 완벽 마스터하기</p>
+    <!-- 배너 섹션 -->
+    <header class="hero">
+        <h1>나만의 코펜하겐 최종 일정 및 동선 짜기</h1>
+        <p>원하는 장소를 담고 '최종 일정 만들기'를 누르면 시간대별 최적 동선이 자동 생성됩니다.</p>
     </header>
 
     <div class="container">
-        
-        <!-- 1. 교통 정보 -->
-        <section id="transport">
-            <h2 class="section-title">🚆 코펜하겐 교통 꿀팁</h2>
-            <div class="info-box">
-                <ul>
-                    <li><strong>자전거 (City Bike / Bycyklen):</strong> 코펜하겐 최고의 교통수단! 자전거 도로가 완벽히 구축되어 있어 앱을 통해 쉽게 대여해 탈 수 있습니다.</li>
-                    <li><strong>메트로 & 버스 (Metro & Bus):</strong> 무인으로 24시간 운행되는 메트로(M1, M2, M3, M4)는 공항에서 시내까지 15분 만에 연결해 줍니다.</li>
-                    <li><strong>코펜하겐 카드 (Copenhagen Card):</strong> 대중교통 무제한 이용 + 80여 개 주요 박물관 및 명소 무료 입장 혜택이 포함되어 있어 관광객에게 필수입니다.</li>
-                </ul>
-            </div>
-        </section>
 
-        <!-- 2. 추천 명소 -->
-        <section id="attractions">
-            <h2 class="section-title">🏛️ 주요 관광 명소</h2>
-            <div class="grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1536294792538-41b95a8f2979?auto=format&fit=crop&w=600&q=80" alt="뉘하운">
-                    <div class="card-content">
-                        <span class="tag">랜드마크</span>
+        <!-- 나의 코스 장바구니 및 동선 위젯 -->
+        <div class="my-course-box" id="course-box">
+            <div class="my-course-header">
+                <h3><i class="fa-solid fa-suitcase-rolling"></i> 내가 담은 여행 코스 <span class="badge-count" id="courseCount">0개</span></h3>
+                <span style="font-size: 0.9rem; color: var(--text-light);" id="totalTimeInfo">예상 소요 시간: 0시간</span>
+            </div>
+            
+            <div id="courseContainer">
+                <div class="course-empty-msg">아직 담긴 장소가 없습니다. 아래 명소 카드에서 <strong>[+ 일정에 담기]</strong>를 눌러보세요!</div>
+            </div>
+
+            <!-- 최종 일정 만들기 버튼 -->
+            <div class="course-actions" id="courseActions" style="display: none;">
+                <button class="btn-action" onclick="generateItinerary()"><i class="fa-solid fa-route"></i> 최종 일정 및 동선 만들기</button>
+            </div>
+
+            <!-- 동선 타임라인 결과 영역 -->
+            <div class="itinerary-timeline" id="itineraryTimeline">
+                <h4><i class="fa-solid fa-map-location-dot"></i> 맞춤형 시간대별 이동 동선 가이드</h4>
+                <div id="timelineContent"></div>
+            </div>
+        </div>
+
+        <!-- 명소 및 활동 선택 섹션 -->
+        <div class="section-header" id="attractions">
+            <h2>🏛️ 코펜하겐 명소 & 액티비티 선택하기</h2>
+            <p>원하는 카테고리를 살펴보고 일정을 자유롭게 구성해 보세요.</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterSelection('all')">전체보기</button>
+            <button class="filter-btn" onclick="filterSelection('landmark')">🏛️ 랜드마크</button>
+            <button class="filter-btn" onclick="filterSelection('culture')">🏊 문화·수영·공원</button>
+            <button class="filter-btn" onclick="filterSelection('food')">☕ 맛집·카페</button>
+        </div>
+
+        <!-- 카드 그리드 -->
+        <div class="grid" id="cardGrid">
+            
+            <!-- 1. 뉘하운 -->
+            <div class="card" data-category="landmark">
+                <div class="card-visual">
+                    <span class="badge">랜드마크</span>
+                    <i class="fa-solid fa-ship"></i>
+                    <h4>Nyhavn Canal</h4>
+                </div>
+                <div class="card-body">
+                    <div>
                         <h3>뉘하운 (Nyhavn)</h3>
-                        <p>알록달록한 건물과 정박된 목선들이 어우러진 코펜하겐의 엽서 같은 대표 항구 거리입니다.</p>
+                        <p>알록달록한 17세기 타운하우스와 목선이 어우러진 코펜하겐의 상징적 항구 거리.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '뉘하운 (Nyhavn)', '랜드마크', 2)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
                     </div>
                 </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=600&q=80" alt="티볼리 공원">
-                    <div class="card-content">
-                        <span class="tag">테마파크</span>
+            </div>
+
+            <!-- 2. 티볼리 공원 -->
+            <div class="card" data-category="landmark">
+                <div class="card-visual">
+                    <span class="badge">테마파크</span>
+                    <i class="fa-solid fa-ferris-wheel"></i>
+                    <h4>Tivoli Gardens</h4>
+                </div>
+                <div class="card-body">
+                    <div>
                         <h3>티볼리 공원 (Tivoli Gardens)</h3>
-                        <p>세계에서 두 번째로 오래된 유원지. 밤이 되면 환상적인 조명이 켜지며 야외 공연도 자주 열립니다.</p>
+                        <p>세계에서 가장 오래된 유원지 중 하나로 밤이 되면 환상적인 야경과 공연이 펼쳐짐.</p>
                     </div>
-                </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1609869408226-c2901cf102d7?auto=format&fit=crop&w=600&q=80" alt="인어공주 동상">
-                    <div class="card-content">
-                        <span class="tag">기념비</span>
-                        <h3>인어공주 동상 (The Little Mermaid)</h3>
-                        <p>바닷가 바위에 쓸쓸히 앉아 있는 안데르센 동화 모티브의 세계적인 조형물입니다.</p>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 3시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '티볼리 공원 (Tivoli Gardens)', '테마파크', 3)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 3. 문화 활동, 공원, 수영 -->
-        <section id="culture">
-            <h2 class="section-title">🏊 문화 활동, 공원 & 수영</h2>
-            <div class="grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="하버 바스 수영">
-                    <div class="card-content">
-                        <span class="tag">액티비티 / 수영</span>
-                        <h3>아일랜드 브뤼게 하버 바스 (Islands Brygge)</h3>
-                        <p>도시 한복판 항구 수질이 너무 깨끗해 현지인들이 여름과 가을에 다이빙하고 수영을 즐기는 명소입니다.</p>
+            <!-- 3. 하버 바스 수영 -->
+            <div class="card" data-category="culture">
+                <div class="card-visual culture">
+                    <span class="badge">액티비티</span>
+                    <i class="fa-solid fa-person-swimming"></i>
+                    <h4>Harbour Bath</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3>아일랜드 브뤼게 하버 바스</h3>
+                        <p>깨끗한 항구 수질 속에서 현지인처럼 다이빙과 수영을 즐길 수 있는 도심 속 수영장.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '아일랜드 브뤼게 하버 바스', '액티비티', 2)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
                     </div>
                 </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1584467735813-9564f772393d?auto=format&fit=crop&w=600&q=80" alt="왕립 코펜하겐 오페라하우스">
-                    <div class="card-content">
-                        <span class="tag">공연 / 문화</span>
-                        <h3>왕립 오페라 하우스 & 덴마크 왕립 극장</h3>
-                        <p>세계적인 건축미를 자랑하며, 클래식 음악, 오페라, 현대 무용 등 고품격 공연 문화예술을 만끽할 수 있습니다.</p>
-                    </div>
+            </div>
+
+            <!-- 4. 왕의 정원 -->
+            <div class="card" data-category="culture">
+                <div class="card-visual culture">
+                    <span class="badge">공원 & 휴식</span>
+                    <i class="fa-solid fa-tree"></i>
+                    <h4>Kongens Have</h4>
                 </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=600&q=80" alt="왕의 정원">
-                    <div class="card-content">
-                        <span class="tag">공원 / 휴식</span>
+                <div class="card-body">
+                    <div>
                         <h3>왕의 정원 (Kongens Have)</h3>
-                        <p>로센보르 성 주변에 넓게 펼쳐진 코펜하겐에서 가장 오래되고 사랑받는 도심 속 잔디 공원입니다.</p>
+                        <p>로센보르 성 주변의 탁 트인 잔디밭에서 여유로운 피크닉과 산책을 즐기는 명소.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '왕의 정원 (Kongens Have)', '공원', 1.5)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 4. 식당 & 카페 -->
-        <section id="food">
-            <h2 class="section-title">☕ 맛집 & 카페 추천</h2>
-            <div class="grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80" alt="레스토랑">
-                    <div class="card-content">
-                        <span class="tag">레스토랑 / 미식</span>
-                        <h3>호스텔 & 노르딕 파인 다이닝</h3>
-                        <p>세계 최고 수준의 뉴 노르딕 퀴진을 맛볼 수 있는 곳. 전통 오픈샌드위치 '스뫼레브뢰드(Smørrebrød)'는 필수 코스!</p>
-                    </div>
+            <!-- 5. 스뫼레브뢰드 맛집 -->
+            <div class="card" data-category="food">
+                <div class="card-visual food">
+                    <span class="badge">미식</span>
+                    <i class="fa-solid fa-utensils"></i>
+                    <h4>Nordic Cuisine</h4>
                 </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80" alt="카페">
-                    <div class="card-content">
-                        <span class="tag">카페 / 커피</span>
-                        <h3>아뜰리에 세प्टember & 로컬 카페들</h3>
-                        <p>감각적인 인테리어와 수준 높은 핸드드립 커피, 아보카도 토스트로 유명한 힙한 스칸디나비안 카페 감성.</p>
+                <div class="card-body">
+                    <div>
+                        <h3>노르딕 스뫼레브뢰드</h3>
+                        <p>다양한 신선한 해산물과 고기를 얹어 먹는 덴마크 전통 오픈 샌드위치 미식 체험.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '노르딕 스뫼레브뢰드 식사', '미식', 1)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 5. 추천 코스 -->
-        <section id="course">
-            <h2 class="section-title">🗺️ 알짜배기 1박 2일 추천 코스</h2>
-            <div class="info-box">
-                <ul>
-                    <li><strong>[1일차] 클래식 코펜하겐 탐방:</strong> 시청사 광장 출발 ➔ 스트로겟(Strøget) 거리 쇼핑 ➔ 뉘하운 운하에서 점심 식사 ➔ 아말리엔보르 성(근위병 교대식) ➔ 인어공주 동상 산책 ➔ 저녁에 티볼리 공원 야경 감상.</li>
-                    <li><strong>[2일차] 로컬 라이프 & 여유 즐기기:</strong> 왕의 정원 산책 ➔ 토르베할레른(Torvehallerne) 시장에서 현지인처럼 브런치 ➔ 오후에 아일랜드 브뤼게 하버 바스에서 항구 수영 또는 자전거 타고 노르웨이풍 골목 탐방.</li>
-                </ul>
+            <!-- 6. 아뜰리에 셉템버 카페 -->
+            <div class="card" data-category="food">
+                <div class="card-visual food">
+                    <span class="badge">카페</span>
+                    <i class="fa-solid fa-mug-hot"></i>
+                    <h4>Scandinavian Cafe</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h3>아뜰리에 셉템버</h3>
+                        <p>감각적인 인테리어와 아보카도 토스트, 깊은 풍미의 스칸디나비안 드립 커피.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
+                        <button class="btn-add" onclick="toggleCourse(this, '아뜰리에 셉템버 카페', '카페', 1)">
+                            <i class="fa-solid fa-plus"></i> 일정에 담기
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 지도 섹션 -->
+        <section class="map-section" id="map-section">
+            <div class="section-header" style="margin-bottom: 20px;">
+                <h2>🗺️ 코펜하겐 실시간 인터랙티브 지도</h2>
+                <p>선택한 명소들의 위치를 파악하고 동선을 구상해보세요.</p>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=12.55%2C55.67%2C12.60%2C55.69&amp;layer=mapnik&amp;marker=55.68%2C12.57" allowfullscreen></iframe>
             </div>
         </section>
 
@@ -306,8 +649,133 @@
 
     <!-- 푸터 -->
     <footer>
-        <p>&copy; 2026 Copenhagen Local Travel Guide. All rights reserved.</p>
+        <p>&copy; 2026 Copenhagen Hub. All rights reserved.</p>
     </footer>
 
+    <!-- 자바스크립트 로직 -->
+    <script>
+        let mySelectedCourse = [];
+
+        function toggleCourse(button, title, category, hours) {
+            const index = mySelectedCourse.findIndex(item => item.title === title);
+
+            if (index > -1) {
+                mySelectedCourse.splice(index, 1);
+                button.classList.remove('added');
+                button.innerHTML = '<i class="fa-solid fa-plus"></i> 일정에 담기';
+            } else {
+                mySelectedCourse.push({ title, category, hours });
+                button.classList.add('added');
+                button.innerHTML = '<i class="fa-solid fa-check"></i> 담김 완료';
+            }
+
+            renderCourseBox();
+            document.getElementById('itineraryTimeline').style.display = 'none';
+        }
+
+        function removeCourse(title) {
+            mySelectedCourse = mySelectedCourse.filter(item => item.title !== title);
+            
+            document.querySelectorAll('.card').forEach(card => {
+                const cardTitle = card.querySelector('h3').innerText;
+                if (cardTitle === title) {
+                    const btn = card.querySelector('.btn-add');
+                    btn.classList.remove('added');
+                    btn.innerHTML = '<i class="fa-solid fa-plus"></i> 일정에 담기';
+                }
+            });
+
+            renderCourseBox();
+            document.getElementById('itineraryTimeline').style.display = 'none';
+        }
+
+        function renderCourseBox() {
+            const container = document.getElementById('courseContainer');
+            const countBadge = document.getElementById('courseCount');
+            const timeInfo = document.getElementById('totalTimeInfo');
+            const actionsDiv = document.getElementById('courseActions');
+
+            countBadge.innerText = `${mySelectedCourse.length}개`;
+
+            if (mySelectedCourse.length === 0) {
+                container.innerHTML = `<div class="course-empty-msg">아직 담긴 장소가 없습니다. 아래 명소 카드에서 <strong>[+ 일정에 담기]</strong>를 눌러보세요!</div>`;
+                timeInfo.innerText = "예상 소요 시간: 0시간";
+                actionsDiv.style.display = 'none';
+                return;
+            }
+
+            let totalHours = mySelectedCourse.reduce((sum, item) => sum + item.hours, 0);
+            timeInfo.innerText = `총 예상 소요 시간: 약 ${totalHours}시간`;
+            actionsDiv.style.display = 'block';
+
+            let html = '<div class="course-list">';
+            mySelectedCourse.forEach((item, idx) => {
+                html += `
+                    <div class="course-item">
+                        <div class="course-item-info">
+                            <h4>${idx + 1}. ${item.title}</h4>
+                            <span>분류: ${item.category} | 예상 소요: ${item.hours}시간</span>
+                        </div>
+                        <button class="btn-remove" onclick="removeCourse('${item.title}')">삭제</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function generateItinerary() {
+            if (mySelectedCourse.length === 0) return;
+
+            const timelineDiv = document.getElementById('itineraryTimeline');
+            const timelineContent = document.getElementById('timelineContent');
+
+            let html = '';
+            let times = ["09:30 AM (오전 일정)", "12:00 PM (점심 시간)", "02:30 PM (오후 일정)", "05:30 PM (저녁 & 야경 일정)"];
+            
+            mySelectedCourse.forEach((item, idx) => {
+                let timeSlot = times[idx % times.length];
+                let movementTip = "";
+
+                if (item.category === '랜드마크') {
+                    movementTip = "이동 동선 팁: 도심 중심부에 위치하므로 자전거 대여 또는 도보 이동이 가장 편리합니다.";
+                } else if (item.category === '액티비티') {
+                    movementTip = "이동 동선 팁: 항구변에 인접해 있어 메트로 M1/M2 노선 이용 후 도보 접근 추천.";
+                } else if (item.category === '공원') {
+                    movementTip = "이동 동선 팁: 인근 지하철역(Nørreport)에서 도보 5분 거리.";
+                } else {
+                    movementTip = "이동 동선 팁: 주변 상권과 인접해 있어 메인 스트리트 산책 겸 도보 이동 최적.";
+                }
+
+                html += `
+                    <div class="timeline-step">
+                        <strong>[${timeSlot}] ${item.title}</strong>
+                        <p style="font-size: 0.95rem; color: var(--text-main); margin: 4px 0;">활동 내용: ${item.category} 관람 및 체험 (예상 소요 ${item.hours}시간)</p>
+                        <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> ${movementTip}</p>
+                    </div>
+                `;
+            });
+
+            timelineContent.innerHTML = html;
+            timelineDiv.style.display = 'block';
+            timelineDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function filterSelection(category) {
+            const cards = document.querySelectorAll('.card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
