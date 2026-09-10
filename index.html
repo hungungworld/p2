@@ -34,7 +34,7 @@
             line-height: 1.7;
         }
 
-        /* 내비게이션 바 */
+        /* 내비게이션 바 (메뉴 텍스트 제거 후 로고만 깔끔하게 배치) */
         navbar {
             display: flex;
             justify-content: space-between;
@@ -57,43 +57,28 @@
             gap: 8px;
         }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 24px;
-            font-size: 0.95rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--accent);
-        }
-
-        /* 배너 섹션 */
+        /* 배너 섹션 (말림 현상 방지를 위한 패딩 및 폰트 유연화) */
         .hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             text-align: center;
-            padding: 70px 20px;
+            padding: 60px 20px;
         }
 
         .hero h1 {
-            font-size: 2.6rem;
+            font-size: 2.4rem;
             font-weight: 700;
             margin-bottom: 12px;
+            word-break: keep-all;
         }
 
         .hero p {
-            font-size: 1.1rem;
-            max-width: 650px;
+            font-size: 1.05rem;
+            max-width: 750px;
             margin: 0 auto;
             color: #94a3b8;
+            word-break: keep-all;
+            padding: 0 10px;
         }
 
         /* 메인 컨테이너 */
@@ -174,6 +159,8 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .course-item-info h4 {
@@ -185,6 +172,30 @@
         .course-item-info span {
             font-size: 0.85rem;
             color: var(--text-light);
+        }
+
+        .course-item-btns {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-map-link {
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-map-link:hover {
+            background: #bae6fd;
         }
 
         .btn-remove {
@@ -204,7 +215,10 @@
 
         .course-actions {
             margin-top: 20px;
-            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .btn-action {
@@ -216,10 +230,31 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-action:hover {
             background: var(--accent-hover);
+        }
+
+        .btn-excel {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-excel:hover {
+            background: #059669;
         }
 
         /* 동선 타임라인 결과 박스 */
@@ -469,25 +504,16 @@
         }
 
         @media(max-width: 768px) {
-            .hero h1 { font-size: 2.1rem; }
-            .nav-links { display: none; }
+            .hero h1 { font-size: 2.0rem; }
+            .hero p { font-size: 0.95rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 내비게이션 바 -->
+    <!-- 내비게이션 바 (상단 메뉴 목록 제거) -->
     <navbar>
         <div class="logo"><i class="fa-solid fa-compass"></i> Copenhagen Hub</div>
-        <ul class="nav-links">
-            <li><a href="#course-box" class="active">나만의 코스 담기</a></li>
-            <li><a href="#landmarks">랜드마크</a></li>
-            <li><a href="#museums">박물관·미술관</a></li>
-            <li><a href="#outdoor">야외활동·공원·수영</a></li>
-            <li><a href="#markets">로컬 시장</a></li>
-            <li><a href="#shopping">빈티지·가구 쇼핑</a></li>
-            <li><a href="#food">맛집·카페 (★4.0+)</a></li>
-        </ul>
     </navbar>
 
     <!-- 배너 섹션 -->
@@ -511,6 +537,7 @@
 
             <div class="course-actions" id="courseActions" style="display: none;">
                 <button class="btn-action" onclick="generateItinerary()"><i class="fa-solid fa-route"></i> 최종 일정 및 동선 만들기</button>
+                <button class="btn-excel" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> 엑셀(CSV)로 다운로드</button>
             </div>
 
             <div class="itinerary-timeline" id="itineraryTimeline">
@@ -535,7 +562,7 @@
             <button class="filter-btn" onclick="filterSelection('food', event)">⭐ 맛집·카페 (4.0+)</button>
         </div>
 
-        <!-- 카드 그리드 시스템 (data-id 추가됨) -->
+        <!-- 카드 그리드 시스템 -->
         <div class="grid" id="cardGrid">
             
             <!-- 1. 랜드마크 -->
@@ -552,7 +579,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-1', '뉘하운 항구', '랜드마크', 2)">
+                        <button class="btn-add" onclick="toggleCourse('spot-1', '뉘하운 항구', '랜드마크', 2, 'Nyhavn, Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -572,7 +599,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 3시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-2', '티볼리 공원', '랜드마크', 3)">
+                        <button class="btn-add" onclick="toggleCourse('spot-2', '티볼리 공원', '랜드마크', 3, 'Tivoli Gardens, Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -593,7 +620,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 4시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-3', '루이지애나 현대미술관', '박물관/미술관', 4)">
+                        <button class="btn-add" onclick="toggleCourse('spot-3', '루이지애나 현대미술관', '박물관/미술관', 4, 'Louisiana Museum of Modern Art')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -613,7 +640,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-4', '글립토테크 미술관', '박물관/미술관', 2)">
+                        <button class="btn-add" onclick="toggleCourse('spot-4', '글립토테크 미술관', '박물관/미술관', 2, 'Ny Carlsberg Glyptotek')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -633,7 +660,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-5', '덴마크 디자인 박물관', '박물관/미술관', 2)">
+                        <button class="btn-add" onclick="toggleCourse('spot-5', '덴마크 디자인 박물관', '박물관/미술관', 2, 'Designmuseum Danmark')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -653,7 +680,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-6', '코펜하겐 컨템포러리 미술관', '박물관/미술관', 2)">
+                        <button class="btn-add" onclick="toggleCourse('spot-6', '코펜하겐 컨템포러리 미술관', '박물관/미술관', 2, 'Copenhagen Contemporary')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -674,7 +701,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-7', '아일랜드 브뤼게 하버 바스', '야외수영/공원', 2)">
+                        <button class="btn-add" onclick="toggleCourse('spot-7', '아일랜드 브뤼게 하버 바스', '야외수영/공원', 2, 'Islands Brygge Harbour Bath')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -694,7 +721,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-8', '왕의 정원 산책', '야외수영/공원', 1.5)">
+                        <button class="btn-add" onclick="toggleCourse('spot-8', '왕의 정원 산책', '야외수영/공원', 1.5, 'Kongens Have, Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -715,7 +742,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-9', '토르베할레른 로컬 시장', '로컬시장', 1.5)">
+                        <button class="btn-add" onclick="toggleCourse('spot-9', '토르베할레른 로컬 시장', '로컬시장', 1.5, 'TorvehallerneKBH')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -735,7 +762,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-10', '브론스 스트리트 푸드 마켓', '로컬시장', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-10', '브론스 스트리트 푸드 마켓', '로컬시장', 1, 'Broens Gadekøkken')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -756,7 +783,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-11', '일룸스 볼리후스 가구샵', '쇼핑/가구', 1.5)">
+                        <button class="btn-add" onclick="toggleCourse('spot-11', '일룸스 볼리후스 가구샵', '쇼핑/가구', 1.5, 'Illums Bolighus')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -776,7 +803,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-12', '클라식 빈티지 가구 샵', '쇼핑/빈티지', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-12', '클라식 빈티지 가구 샵', '쇼핑/빈티지', 1, 'KLASSIK Moderne Møbelkunst')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -796,7 +823,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-13', '헤이 하우스 (HAY House)', '쇼핑/가구', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-13', '헤이 하우스 (HAY House)', '쇼핑/가구', 1, 'HAY House Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -816,7 +843,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-14', '타임즈 업 패션 빈티지 샵', '쇼핑/빈티지', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-14', '타임즈 업 패션 빈티지 샵', '쇼핑/빈티지', 1, 'Time\'s Up Vintage Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -838,7 +865,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-15', '가솔린 그릴 수제버거 (맛집 4.6)', '맛집/카페', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-15', '가솔린 그릴 수제버거 (맛집 4.6)', '맛집/카페', 1, 'Gasoline Grill Landgreven')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -859,7 +886,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 45분</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-16', '주노 더 베이커리 (카페 4.7)', '맛집/카페', 0.75)">
+                        <button class="btn-add" onclick="toggleCourse('spot-16', '주노 더 베이커리 (카페 4.7)', '맛집/카페', 0.75, 'Juno the bakery')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -880,7 +907,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-17', '미트팩킹 피스카바 해산물 (맛집 4.5)', '맛집/카페', 1.5)">
+                        <button class="btn-add" onclick="toggleCourse('spot-17', '미트팩킹 피스카바 해산물 (맛집 4.5)', '맛집/카페', 1.5, 'Kødbyens Fiskebar')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -901,7 +928,7 @@
                     </div>
                     <div class="card-footer">
                         <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-18', '아뜰리에 셉템버 브런치카페 (★4.4)', '맛집/카페', 1)">
+                        <button class="btn-add" onclick="toggleCourse('spot-18', '아뜰리에 셉템버 브런치카페 (★4.4)', '맛집/카페', 1, 'Atelier September Copenhagen')">
                             <i class="fa-solid fa-plus"></i> 일정에 담기
                         </button>
                     </div>
@@ -928,17 +955,18 @@
         <p>&copy; 2026 Copenhagen Ultimate Hub. All rights reserved.</p>
     </footer>
 
-    <!-- 자바스크립트 로직 (안정적인 ID 기반 매칭으로 수정됨) -->
+    <!-- 자바스크립트 로직 -->
     <script>
         let mySelectedCourse = [];
 
-        function toggleCourse(id, title, category, hours) {
+        function toggleCourse(id, title, category, hours, queryKeyword) {
             const index = mySelectedCourse.findIndex(item => item.id === id);
 
             if (index > -1) {
                 mySelectedCourse.splice(index, 1);
             } else {
-                mySelectedCourse.push({ id, title, category, hours });
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryKeyword)}`
+                mySelectedCourse.push({ id, title, category, hours, mapUrl });
             }
 
             updateCardButtons();
@@ -986,7 +1014,7 @@
 
             let totalHours = mySelectedCourse.reduce((sum, item) => sum + item.hours, 0);
             timeInfo.innerText = `총 예상 소요 시간: 약 ${totalHours}시간`;
-            actionsDiv.style.display = 'block';
+            actionsDiv.style.display = 'flex';
 
             let html = '<div class="course-list">';
             mySelectedCourse.forEach((item, idx) => {
@@ -996,7 +1024,10 @@
                             <h4>${idx + 1}. ${item.title}</h4>
                             <span>분류: ${item.category} | 예상 소요: ${item.hours}시간</span>
                         </div>
-                        <button class="btn-remove" onclick="removeCourse('${item.id}')">삭제</button>
+                        <div class="course-item-btns">
+                            <a href="${item.mapUrl}" target="_blank" class="btn-map-link"><i class="fa-solid fa-location-dot"></i> 구글 지도 보기</a>
+                            <button class="btn-remove" onclick="removeCourse('${item.id}')">삭제</button>
+                        </div>
                     </div>
                 `;
             });
@@ -1029,7 +1060,7 @@
                     <div class="timeline-step">
                         <strong>[${timeSlot}] ${item.title}</strong>
                         <p style="font-size: 0.95rem; color: var(--text-main); margin: 4px 0;">분류: ${item.category} (소요 ${item.hours}시간)</p>
-                        <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> 이동 및 동선 팁: ${tip}</p>
+                        <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> 이동 및 동선 팁: ${tip} | <a href="${item.mapUrl}" target="_blank" style="color: var(--accent); font-weight: 600;">[구글지도 길찾기 열기]</a></p>
                     </div>
                 `;
             });
@@ -1037,6 +1068,32 @@
             timelineContent.innerHTML = html;
             timelineDiv.style.display = 'block';
             timelineDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadExcel() {
+            if (mySelectedCourse.length === 0) return;
+
+            let csvContent = "\uFEFF순번,장소명,카테고리,예상소요시간(시간),구글지도링크\n";
+            
+            mySelectedCourse.forEach((item, idx) => {
+                let row = [
+                    idx + 1,
+                    `"${item.title.replace(/"/g, '""')}"`,
+                    `"${item.category}"`,
+                    item.hours,
+                    `"${item.mapUrl}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Copenhagen_Itinerary.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function filterSelection(category, event) {
