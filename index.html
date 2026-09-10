@@ -34,7 +34,7 @@
             line-height: 1.7;
         }
 
-        /* 내비게이션 바 (메뉴 텍스트 제거 후 로고만 깔끔하게 배치) */
+        /* 내비게이션 바 */
         navbar {
             display: flex;
             justify-content: space-between;
@@ -57,28 +57,43 @@
             gap: 8px;
         }
 
-        /* 배너 섹션 (말림 현상 방지를 위한 패딩 및 폰트 유연화) */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
+
+        /* 배너 섹션 */
         .hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
             text-align: center;
-            padding: 60px 20px;
+            padding: 70px 20px;
         }
 
         .hero h1 {
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             font-weight: 700;
             margin-bottom: 12px;
-            word-break: keep-all;
         }
 
         .hero p {
-            font-size: 1.05rem;
-            max-width: 750px;
+            font-size: 1.1rem;
+            max-width: 650px;
             margin: 0 auto;
             color: #94a3b8;
-            word-break: keep-all;
-            padding: 0 10px;
         }
 
         /* 메인 컨테이너 */
@@ -276,17 +291,30 @@
             gap: 8px;
         }
 
+        .day-group {
+            margin-bottom: 20px;
+        }
+
+        .day-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 10px;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 5px;
+        }
+
         .timeline-step {
             background: white;
             padding: 15px 20px;
             border-radius: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border-left: 4px solid var(--accent);
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
         .timeline-step strong {
-            color: var(--accent);
+            color: var(--primary);
             display: inline-block;
             margin-bottom: 4px;
         }
@@ -504,16 +532,25 @@
         }
 
         @media(max-width: 768px) {
-            .hero h1 { font-size: 2.0rem; }
-            .hero p { font-size: 0.95rem; }
+            .hero h1 { font-size: 2.1rem; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 내비게이션 바 (상단 메뉴 목록 제거) -->
+    <!-- 내비게이션 바 -->
     <navbar>
         <div class="logo"><i class="fa-solid fa-compass"></i> Copenhagen Hub</div>
+        <ul class="nav-links">
+            <li><a href="#course-box" class="active">나만의 코스 담기</a></li>
+            <li><a href="#landmarks">랜드마크</a></li>
+            <li><a href="#museums">박물관·미술관</a></li>
+            <li><a href="#outdoor">야외활동·공원·수영</a></li>
+            <li><a href="#markets">로컬 시장</a></li>
+            <li><a href="#shopping">빈티지·가구 쇼핑</a></li>
+            <li><a href="#food">맛집·카페 (★4.0+)</a></li>
+        </ul>
     </navbar>
 
     <!-- 배너 섹션 -->
@@ -528,7 +565,7 @@
         <div class="my-course-box" id="course-box">
             <div class="my-course-header">
                 <h3><i class="fa-solid fa-suitcase-rolling"></i> 내가 담은 여행 코스 <span class="badge-count" id="courseCount">0개</span></h3>
-                <span style="font-size: 0.9rem; color: var(--text-light);" id="totalTimeInfo">예상 소요 시간: 0시간</span>
+                <span style="font-size: 0.9rem; color: var(--text-light);" id="totalTimeInfo">총 예상 소요 시간: 0시간 (0박 0일)</span>
             </div>
             
             <div id="courseContainer">
@@ -541,7 +578,7 @@
             </div>
 
             <div class="itinerary-timeline" id="itineraryTimeline">
-                <h4><i class="fa-solid fa-map-location-dot"></i> 맞춤형 시간대별 이동 동선 가이드</h4>
+                <h4><i class="fa-solid fa-map-location-dot"></i> 맞춤형 몇 박 며칠 타임라인 & 이동 동선 가이드</h4>
                 <div id="timelineContent"></div>
             </div>
         </div>
@@ -965,7 +1002,7 @@
             if (index > -1) {
                 mySelectedCourse.splice(index, 1);
             } else {
-                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryKeyword)}`
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryKeyword)}`;
                 mySelectedCourse.push({ id, title, category, hours, mapUrl });
             }
 
@@ -1007,13 +1044,19 @@
 
             if (mySelectedCourse.length === 0) {
                 container.innerHTML = `<div class="course-empty-msg">아직 담긴 장소가 없습니다. 아래 카드에서 <strong>[+ 일정에 담기]</strong>를 눌러보세요!</div>`;
-                timeInfo.innerText = "예상 소요 시간: 0시간";
+                timeInfo.innerText = "총 예상 소요 시간: 0시간 (0박 0일)";
                 actionsDiv.style.display = 'none';
                 return;
             }
 
             let totalHours = mySelectedCourse.reduce((sum, item) => sum + item.hours, 0);
-            timeInfo.innerText = `총 예상 소요 시간: 약 ${totalHours}시간`;
+            
+            // 하루 일정 기준 (약 7시간 기준 계산, 남는 시간에 따라 박/일 계산)
+            let totalDays = Math.ceil(totalHours / 7);
+            if (totalDays < 1) totalDays = 1;
+            let nights = totalDays > 1 ? totalDays - 1 : 0;
+            
+            timeInfo.innerText = `총 예상 소요 시간: 약 ${totalHours}시간 (${nights}박 ${totalDays}일 코스)`;
             actionsDiv.style.display = 'flex';
 
             let html = '<div class="course-list">';
@@ -1041,28 +1084,61 @@
             const timelineDiv = document.getElementById('itineraryTimeline');
             const timelineContent = document.getElementById('timelineContent');
 
-            let html = '';
-            let times = ["09:30 AM (오전 일정)", "12:00 PM (점심 & 미식 탐방)", "02:30 PM (오후 일정)", "05:30 PM (저녁 & 야경 일정)"];
-            
-            mySelectedCourse.forEach((item, idx) => {
-                let timeSlot = times[idx % times.length];
-                let tip = "메트로 M1/M2 노선 및 공유 자전거 이동 최적 동선";
+            // 일자별 그룹화 로직 (하루 최대 약 7시간 기준으로 스팟 배분)
+            let days = [];
+            let currentDayItems = [];
+            let currentDayHours = 0;
 
-                if (item.category.includes('박물관') || item.category.includes('쇼핑')) {
-                    tip = "도심 중심가 및 Bredgade/스트로겟 쇼핑 거리 인근 도보 이동 추천";
-                } else if (item.category.includes('맛집')) {
-                    tip = "구글 4.0점 이상 검증된 핫플! 사전 예약 또는 피크타임 피해서 방문 추천";
-                } else if (item.category.includes('야외')) {
-                    tip = "맑은 날씨에 산책 및 수영 장비를 챙겨 방문하세요.";
+            mySelectedCourse.forEach(item => {
+                if (currentDayHours + item.hours > 7 && currentDayItems.length > 0) {
+                    days.push(currentDayItems);
+                    currentDayItems = [item];
+                    currentDayHours = item.hours;
+                } else {
+                    currentDayItems.push(item);
+                    currentDayHours += item.hours;
                 }
+            });
+            if (currentDayItems.length > 0) {
+                days.push(currentDayItems);
+            }
 
+            let totalDays = days.length;
+            let nights = totalDays > 1 ? totalDays - 1 : 0;
+
+            let html = `<p style="margin-bottom: 15px; font-weight: 600; color: var(--primary);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 일정표입니다.</p>`;
+            
+            let times = ["09:30 AM (오전 일정)", "12:30 PM (점심 & 미식 탐방)", "03:00 PM (오후 일정)", "06:00 PM (저녁 & 야경 일정)"];
+
+            days.forEach((dayItems, dayIndex) => {
+                let dayNum = dayIndex + 1;
                 html += `
-                    <div class="timeline-step">
-                        <strong>[${timeSlot}] ${item.title}</strong>
-                        <p style="font-size: 0.95rem; color: var(--text-main); margin: 4px 0;">분류: ${item.category} (소요 ${item.hours}시간)</p>
-                        <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> 이동 및 동선 팁: ${tip} | <a href="${item.mapUrl}" target="_blank" style="color: var(--accent); font-weight: 600;">[구글지도 길찾기 열기]</a></p>
-                    </div>
+                    <div class="day-group">
+                        <div class="day-title">📌 ${dayNum}일차 일정</div>
                 `;
+
+                dayItems.forEach((item, idx) => {
+                    let timeSlot = times[idx % times.length];
+                    let tip = "메트로 M1/M2 노선 및 공유 자전거 이동 최적 동선";
+
+                    if (item.category.includes('박물관') || item.category.includes('쇼핑')) {
+                        tip = "도심 중심가 및 Bredgade/스트로겟 쇼핑 거리 인근 도보 이동 추천";
+                    } else if (item.category.includes('맛집')) {
+                        tip = "구글 4.0점 이상 검증된 핫플! 사전 예약 또는 피크타임 피해서 방문 추천";
+                    } else if (item.category.includes('야외')) {
+                        tip = "맑은 날씨에 산책 및 수영 장비를 챙겨 방문하세요.";
+                    }
+
+                    html += `
+                        <div class="timeline-step">
+                            <strong>[${timeSlot}] ${item.title}</strong>
+                            <p style="font-size: 0.95rem; color: var(--text-main); margin: 4px 0;">분류: ${item.category} (소요 ${item.hours}시간)</p>
+                            <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> 이동 및 동선 팁: ${tip} | <a href="${item.mapUrl}" target="_blank" style="color: var(--accent); font-weight: 600;">[구글지도 길찾기 열기]</a></p>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
             });
 
             timelineContent.innerHTML = html;
@@ -1073,17 +1149,40 @@
         function downloadExcel() {
             if (mySelectedCourse.length === 0) return;
 
-            let csvContent = "\uFEFF순번,장소명,카테고리,예상소요시간(시간),구글지도링크\n";
+            // 일자별 배분 계산 후 CSV 생성
+            let days = [];
+            let currentDayItems = [];
+            let currentDayHours = 0;
+
+            mySelectedCourse.forEach(item => {
+                if (currentDayHours + item.hours > 7 && currentDayItems.length > 0) {
+                    days.push(currentDayItems);
+                    currentDayItems = [item];
+                    currentDayHours = item.hours;
+                } else {
+                    currentDayItems.push(item);
+                    currentDayHours += item.hours;
+                }
+            });
+            if (currentDayItems.length > 0) {
+                days.push(currentDayItems);
+            }
+
+            let csvContent = "\uFEFF일차,순번,장소명,카테고리,예상소요시간(시간),구글지도링크\n";
             
-            mySelectedCourse.forEach((item, idx) => {
-                let row = [
-                    idx + 1,
-                    `"${item.title.replace(/"/g, '""')}"`,
-                    `"${item.category}"`,
-                    item.hours,
-                    `"${item.mapUrl}"`
-                ].join(",");
-                csvContent += row + "\n";
+            days.forEach((dayItems, dayIndex) => {
+                let dayNum = dayIndex + 1;
+                dayItems.forEach((item, idx) => {
+                    let row = [
+                        `"${dayNum}일차"`,
+                        idx + 1,
+                        `"${item.title.replace(/"/g, '""')}"`,
+                        `"${item.category}"`,
+                        item.hours,
+                        `"${item.mapUrl}"`
+                    ].join(",");
+                    csvContent += row + "\n";
+                });
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
