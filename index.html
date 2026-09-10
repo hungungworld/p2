@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>완벽한 코펜하겐 로컬 여행 가이드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f6;
+        }
+
+        /* 네비게이션 바 */
+        nav {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #1abc9c;
+        }
+
+        /* 헤더 */
+        header {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2.section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 3px solid #1abc9c;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* 카드 그리드 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .card-content p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e1f5fe;
+            color: #0288d1;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* 리스트 스타일 섹션 (교통, 코스 등) */
+        .info-box {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .info-box ul {
+            padding-left: 20px;
+            color: #444;
+        }
+
+        .info-box li {
+            margin-bottom: 12px;
+        }
+
+        .info-box strong {
+            color: #2c3e50;
+        }
+
+        /* 푸터 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 네비게이션 바 -->
+    <nav>
+        <div class="logo">🇩🇰 Copenhagen Guide</div>
+        <ul>
+            <li><a href="#transport">교통</a></li>
+            <li><a href="#attractions">관광명소</a></li>
+            <li><a href="#culture">문화·수영·공원</a></li>
+            <li><a href="#food">맛집·카페</a></li>
+            <li><a href="#course">추천 코스</a></li>
+        </ul>
+    </nav>
+
+    <!-- 헤더 -->
+    <header>
+        <h1>Live Like a Local in Copenhagen</h1>
+        <p>북유럽 감성, 북극해 수영, 자전거 로드트립까지 완벽 마스터하기</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- 1. 교통 정보 -->
+        <section id="transport">
+            <h2 class="section-title">🚆 코펜하겐 교통 꿀팁</h2>
+            <div class="info-box">
+                <ul>
+                    <li><strong>자전거 (City Bike / Bycyklen):</strong> 코펜하겐 최고의 교통수단! 자전거 도로가 완벽히 구축되어 있어 앱을 통해 쉽게 대여해 탈 수 있습니다.</li>
+                    <li><strong>메트로 & 버스 (Metro & Bus):</strong> 무인으로 24시간 운행되는 메트로(M1, M2, M3, M4)는 공항에서 시내까지 15분 만에 연결해 줍니다.</li>
+                    <li><strong>코펜하겐 카드 (Copenhagen Card):</strong> 대중교통 무제한 이용 + 80여 개 주요 박물관 및 명소 무료 입장 혜택이 포함되어 있어 관광객에게 필수입니다.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. 추천 명소 -->
+        <section id="attractions">
+            <h2 class="section-title">🏛️ 주요 관광 명소</h2>
+            <div class="grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1536294792538-41b95a8f2979?auto=format&fit=crop&w=600&q=80" alt="뉘하운">
+                    <div class="card-content">
+                        <span class="tag">랜드마크</span>
+                        <h3>뉘하운 (Nyhavn)</h3>
+                        <p>알록달록한 건물과 정박된 목선들이 어우러진 코펜하겐의 엽서 같은 대표 항구 거리입니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?auto=format&fit=crop&w=600&q=80" alt="티볼리 공원">
+                    <div class="card-content">
+                        <span class="tag">테마파크</span>
+                        <h3>티볼리 공원 (Tivoli Gardens)</h3>
+                        <p>세계에서 두 번째로 오래된 유원지. 밤이 되면 환상적인 조명이 켜지며 야외 공연도 자주 열립니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1609869408226-c2901cf102d7?auto=format&fit=crop&w=600&q=80" alt="인어공주 동상">
+                    <div class="card-content">
+                        <span class="tag">기념비</span>
+                        <h3>인어공주 동상 (The Little Mermaid)</h3>
+                        <p>바닷가 바위에 쓸쓸히 앉아 있는 안데르센 동화 모티브의 세계적인 조형물입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 문화 활동, 공원, 수영 -->
+        <section id="culture">
+            <h2 class="section-title">🏊 문화 활동, 공원 & 수영</h2>
+            <div class="grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="하버 바스 수영">
+                    <div class="card-content">
+                        <span class="tag">액티비티 / 수영</span>
+                        <h3>아일랜드 브뤼게 하버 바스 (Islands Brygge)</h3>
+                        <p>도시 한복판 항구 수질이 너무 깨끗해 현지인들이 여름과 가을에 다이빙하고 수영을 즐기는 명소입니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1584467735813-9564f772393d?auto=format&fit=crop&w=600&q=80" alt="왕립 코펜하겐 오페라하우스">
+                    <div class="card-content">
+                        <span class="tag">공연 / 문화</span>
+                        <h3>왕립 오페라 하우스 & 덴마크 왕립 극장</h3>
+                        <p>세계적인 건축미를 자랑하며, 클래식 음악, 오페라, 현대 무용 등 고품격 공연 문화예술을 만끽할 수 있습니다.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=600&q=80" alt="왕의 정원">
+                    <div class="card-content">
+                        <span class="tag">공원 / 휴식</span>
+                        <h3>왕의 정원 (Kongens Have)</h3>
+                        <p>로센보르 성 주변에 넓게 펼쳐진 코펜하겐에서 가장 오래되고 사랑받는 도심 속 잔디 공원입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 식당 & 카페 -->
+        <section id="food">
+            <h2 class="section-title">☕ 맛집 & 카페 추천</h2>
+            <div class="grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80" alt="레스토랑">
+                    <div class="card-content">
+                        <span class="tag">레스토랑 / 미식</span>
+                        <h3>호스텔 & 노르딕 파인 다이닝</h3>
+                        <p>세계 최고 수준의 뉴 노르딕 퀴진을 맛볼 수 있는 곳. 전통 오픈샌드위치 '스뫼레브뢰드(Smørrebrød)'는 필수 코스!</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80" alt="카페">
+                    <div class="card-content">
+                        <span class="tag">카페 / 커피</span>
+                        <h3>아뜰리에 세प्टember & 로컬 카페들</h3>
+                        <p>감각적인 인테리어와 수준 높은 핸드드립 커피, 아보카도 토스트로 유명한 힙한 스칸디나비안 카페 감성.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 추천 코스 -->
+        <section id="course">
+            <h2 class="section-title">🗺️ 알짜배기 1박 2일 추천 코스</h2>
+            <div class="info-box">
+                <ul>
+                    <li><strong>[1일차] 클래식 코펜하겐 탐방:</strong> 시청사 광장 출발 ➔ 스트로겟(Strøget) 거리 쇼핑 ➔ 뉘하운 운하에서 점심 식사 ➔ 아말리엔보르 성(근위병 교대식) ➔ 인어공주 동상 산책 ➔ 저녁에 티볼리 공원 야경 감상.</li>
+                    <li><strong>[2일차] 로컬 라이프 & 여유 즐기기:</strong> 왕의 정원 산책 ➔ 토르베할레른(Torvehallerne) 시장에서 현지인처럼 브런치 ➔ 오후에 아일랜드 브뤼게 하버 바스에서 항구 수영 또는 자전거 타고 노르웨이풍 골목 탐방.</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 푸터 -->
+    <footer>
+        <p>&copy; 2026 Copenhagen Local Travel Guide. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
