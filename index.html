@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copenhagen Ultimate Hub | 박물관, 쇼핑, 미식 & 맞춤 동선</title>
+    <title>Copenhagen 2026 | Cloud Dancer Bento Dashboard</title>
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS (실시간 핀 지도용) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
-            --primary: #0f172a;
-            --accent: #0284c7;
-            --accent-hover: #0369a1;
-            --amber: #d97706;
-            --bg-color: #f8fafc;
+            --primary: #1e293b;         /* 차분한 딥 차콜 */
+            --accent: #64748b;          /* 우아한 클라우드 그레이시 포인트 */
+            --accent-hover: #475569;    
+            --bg-color: #f4f6f8;        /* 팬톤 2026 Cloud Dancer 영감의 소프트 아이보리/라이트 그레이시 베이스 */
             --card-bg: #ffffff;
             --text-main: #334155;
             --text-light: #64748b;
-            --radius: 16px;
+            --radius: 20px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -31,397 +32,344 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.7;
-        }
-
-        /* 내비게이션 바 (메뉴 제거 후 로고만 깔끔하게 배치) */
-        navbar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            min-height: 100vh;
         }
 
-        .logo {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary);
+        /* 벤토 대시보드 레이아웃 구조 */
+        .app-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* 배너 섹션 */
-        .hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            text-align: center;
-            padding: 70px 20px;
-        }
-
-        .hero h1 {
-            font-size: 2.6rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            max-width: 680px;
+            width: 100%;
+            max-width: 1600px;
             margin: 0 auto;
-            color: #94a3b8;
-            word-break: keep-all; /* 의미 단위 줄바꿈 최적화 */
+            padding: 24px;
+            gap: 24px;
         }
 
-        /* 메인 컨테이너 */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section-header h2 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .section-header p {
-            color: var(--text-light);
-        }
-
-        /* 나의 코스 장바구니 위젯 */
-        .my-course-box {
-            background: white;
-            border: 2px dashed var(--accent);
+        /* 1. 사이드바 (여행 목록 & 경비 계산기) */
+        .sidebar {
+            width: 400px;
+            background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 30px;
-            margin-bottom: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-        }
-
-        .my-course-header {
+            padding: 24px;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 24px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
         }
 
-        .my-course-header h3 {
-            font-size: 1.4rem;
+        .sidebar-header h3 {
+            font-size: 1.3rem;
             color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         .badge-count {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
             padding: 2px 10px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .cost-summary-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            font-size: 0.88rem;
+            color: var(--primary);
+        }
+
+        .cost-summary-box div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .cost-summary-box .total-cost {
+            font-weight: 700;
+            font-size: 1rem;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 6px;
+            margin-top: 6px;
+            color: #0f172a;
         }
 
         .course-empty-msg {
             color: var(--text-light);
             font-style: italic;
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
+            font-size: 0.9rem;
         }
 
         .course-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
         }
 
         .course-item {
             background: #f8fafc;
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .course-item-info h4 {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--primary);
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .course-item-info span {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-light);
         }
 
         .course-item-btns {
             display: flex;
-            gap: 8px;
-            align-items: center;
+            gap: 6px;
         }
 
         .btn-map-link {
-            background: #e0f2fe;
-            color: #0369a1;
+            background: #e2e8f0;
+            color: var(--primary);
             text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-map-link:hover {
-            background: #bae6fd;
         }
 
         .btn-remove {
             background: #fee2e2;
             color: #dc2626;
             border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 6px 8px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+        }
+
+        .btn-action, .btn-excel {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
             transition: var(--transition);
-        }
-
-        .btn-remove:hover {
-            background: #fecaca;
-        }
-
-        .course-actions {
-            margin-top: 20px;
             display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
         }
 
         .btn-action {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .btn-action:hover {
-            background: var(--accent-hover);
+            background: #334155;
         }
 
         .btn-excel {
-            background: #10b981;
+            background: #0284c7;
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .btn-excel:hover {
-            background: #059669;
+            background: #0369a1;
         }
 
-        /* 동선 타임라인 결과 박스 */
-        .itinerary-timeline {
-            margin-top: 30px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 25px;
-            display: none;
-            animation: fadeIn 0.5s ease;
+        /* 2. 메인 벤토 컨텐츠 영역 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        .itinerary-timeline h4 {
+        /* 벤토 헤더 카드 (Cloud Dancer 톤 적용) */
+        .bento-hero {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--primary);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid #cbd5e1;
+        }
+
+        .bento-hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .bento-hero p {
+            color: var(--text-light);
+            font-size: 1rem;
+            word-break: keep-all;
+        }
+
+        /* 벤토 지도 그리드 카드 */
+        .bento-map-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .bento-map-card h3 {
             font-size: 1.2rem;
             color: var(--primary);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .day-group {
-            margin-bottom: 20px;
+        #liveMap {
+            width: 100%;
+            height: 320px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
         }
 
-        .day-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 10px;
-            border-bottom: 2px solid #cbd5e1;
-            padding-bottom: 5px;
-        }
-
-        .timeline-step {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--accent);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .timeline-step strong {
-            color: var(--primary);
-            display: inline-block;
-            margin-bottom: 4px;
-        }
-
-        /* 필터 탭 버튼 */
+        /* 필터 바 */
         .filter-buttons {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 35px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
             background: white;
-            border: 1px solid #e2e8f0;
-            padding: 10px 20px;
-            border-radius: 30px;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: 500;
             color: var(--text-light);
+            font-size: 0.9rem;
             transition: var(--transition);
         }
 
         .filter-btn.active, .filter-btn:hover {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
-            border-color: var(--accent);
+            border-color: var(--primary);
         }
 
-        /* 카드 그리드 시스템 */
-        .grid {
+        /* 벤토 카드 그리드 */
+        .bento-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
             transition: var(--transition);
-            border: 1px solid #f1f5f9;
+            border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
 
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
         .card-visual {
-            height: 180px;
-            background: linear-gradient(135deg, #38bdf8 0%, #0369a1 100%);
+            height: 140px;
+            background: linear-gradient(135deg, #64748b 0%, #334155 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
             position: relative;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
         }
 
-        .card-visual.museum {
-            background: linear-gradient(135deg, #818cf8 0%, #4338ca 100%);
-        }
+        .card-visual.landmark { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); }
+        .card-visual.museum { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); }
+        .card-visual.outdoor { background: linear-gradient(135deg, #334155 0%, #0f172a 100%); }
+        .card-visual.food { background: linear-gradient(135deg, #d97706 0%, #78350f 100%); }
+        .card-visual.market { background: linear-gradient(135deg, #db2777 0%, #831843 100%); }
+        .card-visual.shop { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); }
 
-        .card-visual.outdoor {
-            background: linear-gradient(135deg, #34d399 0%, #047857 100%);
-        }
-
-        .card-visual.food {
-            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
-        }
-
-        .card-visual.market {
-            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
-        }
-
-        .card-visual.shop {
-            background: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%);
-        }
-
-        .card-visual i {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-        }
-
-        .card-visual h4 {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+        .card-visual i { font-size: 2.2rem; margin-bottom: 6px; }
+        .card-visual h4 { font-size: 1.05rem; font-weight: 600; }
 
         .badge {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 12px;
+            left: 12px;
             background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(4px);
             color: white;
-            padding: 4px 10px;
-            font-size: 0.75rem;
+            padding: 3px 8px;
+            font-size: 0.7rem;
             font-weight: 600;
             border-radius: 20px;
         }
 
         .google-rating {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(217, 119, 6, 0.85);
-            backdrop-filter: blur(5px);
+            top: 12px;
+            right: 12px;
+            background: rgba(217, 119, 6, 0.9);
+            backdrop-filter: blur(4px);
             color: white;
-            padding: 4px 10px;
-            font-size: 0.75rem;
+            padding: 3px 8px;
+            font-size: 0.7rem;
             font-weight: 700;
             border-radius: 20px;
         }
 
         .card-body {
-            padding: 25px;
+            padding: 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -429,15 +377,26 @@
         }
 
         .card-body h3 {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-body p {
             color: var(--text-light);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
+            font-size: 0.88rem;
+            margin-bottom: 12px;
+        }
+
+        .card-fee {
+            font-size: 0.8rem;
+            color: #d97706;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: #fef3c7;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
         .card-footer {
@@ -445,549 +404,454 @@
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid #f1f5f9;
-            padding-top: 15px;
+            padding-top: 12px;
         }
 
         .btn-add {
-            background: #f0f9ff;
-            color: var(--accent);
-            border: 1px solid #bae6fd;
-            padding: 8px 16px;
+            background: #f1f5f9;
+            color: var(--primary);
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .btn-add:hover {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
-            border-color: var(--accent);
+            border-color: var(--primary);
         }
 
         .btn-add.added {
-            background: #d1fae5;
-            color: #065f46;
-            border-color: #a7f3d0;
+            background: #e2e8f0;
+            color: #0f172a;
+            border-color: #94a3b8;
         }
 
-        /* 지도 섹션 */
-        .map-section {
-            margin-top: 80px;
-            background: white;
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-
-        .map-container {
-            width: 100%;
-            height: 400px;
-            border-radius: 12px;
-            overflow: hidden;
+        /* 동선 타임라인 결과 박스 */
+        .itinerary-timeline {
             margin-top: 20px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
             border: 1px solid #e2e8f0;
         }
 
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .day-group { margin-bottom: 20px; }
+        .day-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 4px;
         }
 
-        /* 푸터 */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: #090d16;
-            color: #64748b;
-            margin-top: 80px;
-            font-size: 0.9rem;
+        .timeline-step {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media(max-width: 768px) {
-            .hero h1 { font-size: 2.1rem; }
+        @media(max-width: 1024px) {
+            body { display: block; }
+            .app-container { flex-direction: column; padding: 12px; }
+            .sidebar { width: 100%; position: static; height: auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 내비게이션 바 (메뉴 제거 완료) -->
-    <navbar>
-        <div class="logo"><i class="fa-solid fa-compass"></i> Copenhagen Hub</div>
-    </navbar>
+    <div class="app-container">
 
-    <!-- 배너 섹션 (줄바꿈 의미 단위 정리 완료) -->
-    <header class="hero">
-        <h1>코펜하겐 완벽 마스터 가이드</h1>
-        <p>박물관, 미술관, 빈티지 샵, 가구 편집숍부터 구글 4.0+ 미식 맛집까지 <br> 직접 담아 나만의 동선을 짜보세요.</p>
-    </header>
+        <!-- 1. 좌측 사이드바 (내 여행 목록 및 경비 계산기) -->
+        <aside class="sidebar">
+            <div>
+                <div class="sidebar-header">
+                    <h3><i class="fa-solid fa-suitcase-rolling"></i> 나의 여행 코스 <span class="badge-count" id="courseCount">0개</span></h3>
+                    <p id="totalTimeInfo">총 예상 소요 시간: 0시간 (0박 0일)</p>
+                </div>
+                
+                <!-- 실시간 경비 내역 요약 박스 -->
+                <div class="cost-summary-box">
+                    <div><span>입장료 합계:</span> <span id="sumTicketFee">0 DKK (약 0원)</span></div>
+                    <div><span>예상 교통비:</span> <span id="sumTransportFee">0 DKK (약 0원)</span></div>
+                    <div class="total-cost"><span>최종 총 예상 경비:</span> <span id="sumTotalFee">0 DKK (약 0원)</span></div>
+                </div>
 
-    <div class="container">
-
-        <!-- 코스 장바구니 위젯 -->
-        <div class="my-course-box" id="course-box">
-            <div class="my-course-header">
-                <h3><i class="fa-solid fa-suitcase-rolling"></i> 내가 담은 여행 코스 <span class="badge-count" id="courseCount">0개</span></h3>
-                <span style="font-size: 0.9rem; color: var(--text-light);" id="totalTimeInfo">총 예상 소요 시간: 0시간 (0박 0일)</span>
+                <div id="courseContainer">
+                    <div class="course-empty-msg">아직 담긴 장소가 없습니다.<br>오른쪽 카드에서 <strong>[+ 담기]</strong>를 눌러보세요!</div>
+                </div>
             </div>
+
+            <div class="sidebar-footer">
+                <div class="course-actions" id="courseActions" style="display: none;">
+                    <button class="btn-action" onclick="generateItinerary()"><i class="fa-solid fa-route"></i> 최종 일정 동선 및 비용 확인</button>
+                    <button class="btn-excel" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> 엑셀(CSV)로 다운로드</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 2. 우측 메인 벤토 그리드 컨텐츠 -->
+        <main class="main-content">
             
-            <div id="courseContainer">
-                <div class="course-empty-msg">아직 담긴 장소가 없습니다. 아래 카드에서 <strong>[+ 일정에 담기]</strong>를 눌러보세요!</div>
+            <!-- 벤토 배너 카드 (2026 팬톤 트렌드 Cloud Dancer 톤 반영) -->
+            <header class="bento-hero">
+                <h1>Your Copenhagen Guider</h1>
+                <p>차분하고 평온한 백색의 여백 속에서, 박물관·미술관·편집숍부터 미식 맛집까지 직접 담아 나만의 일정을 스마트하게 완성해보세요.</p>
+            </header>
+
+            <!-- 벤토 실시간 핀 지도 카드 -->
+            <section class="bento-map-card">
+                <h3><i class="fa-solid fa-map-location-dot"></i> 실시간 선택 장소 지도 (핀 프리뷰)</h3>
+                <div id="liveMap"></div>
+            </section>
+
+            <!-- 벤토 필터 바 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <h2 style="font-size: 1.4rem; color: var(--primary);">✨ 카테고리별 추천 스팟</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterSelection('all', event)">전체보기</button>
+                    <button class="filter-btn" onclick="filterSelection('landmark', event)">🏛️ 랜드마크</button>
+                    <button class="filter-btn" onclick="filterSelection('museum', event)">🖼️ 미술관</button>
+                    <button class="filter-btn" onclick="filterSelection('outdoor', event)">🌳 야외/공원</button>
+                    <button class="filter-btn" onclick="filterSelection('market', event)">🛒 로컬시장</button>
+                    <button class="filter-btn" onclick="filterSelection('shopping', event)">🪑 쇼핑</button>
+                    <button class="filter-btn" onclick="filterSelection('food', event)">⭐ 맛집</button>
+                </div>
             </div>
 
-            <div class="course-actions" id="courseActions" style="display: none;">
-                <button class="btn-action" onclick="generateItinerary()"><i class="fa-solid fa-route"></i> 최종 일정 및 동선 만들기</button>
-                <button class="btn-excel" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> 엑셀(CSV)로 다운로드</button>
+            <!-- 벤토 카드 그리드 -->
+            <div class="bento-grid" id="cardGrid">
+                
+                <!-- 1. 랜드마크 -->
+                <div class="card" data-category="landmark" data-id="spot-1">
+                    <div class="card-visual landmark">
+                        <span class="badge">랜드마크</span>
+                        <i class="fa-solid fa-ship"></i>
+                        <h4>Nyhavn Canal</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>뉘하운 (Nyhavn)</h3>
+                            <p>알록달록한 17세기 타운하우스와 목선이 정박된 코펜하겐의 상징.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 2시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-1', '뉘하운 항구', '랜드마크', 2, 0, 'Nyhavn, Copenhagen', 55.6798, 12.5910)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="landmark" data-id="spot-2">
+                    <div class="card-visual landmark">
+                        <span class="badge">랜드마크</span>
+                        <i class="fa-solid fa-ferris-wheel"></i>
+                        <h4>Tivoli Gardens</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>티볼리 공원</h3>
+                            <p>1843년에 개장한 세계에서 가장 매혹적인 유원지 및 야경 명소.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 약 150 DKK (약 30,000원)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 3시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-2', '티볼리 공원', '랜드마크', 3, 150, 'Tivoli Gardens, Copenhagen', 55.6735, 12.5681)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 박물관 / 미술관 -->
+                <div class="card" data-category="museum" data-id="spot-3">
+                    <div class="card-visual museum">
+                        <span class="badge">미술관</span>
+                        <i class="fa-solid fa-palette"></i>
+                        <h4>Louisiana Museum</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>루이지애나 미술관</h3>
+                            <p>바다가 내려다보이는 조각 정원과 세계 최고 수준의 현대미술.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 145 DKK (약 29,000원)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 4시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-3', '루이지애나 현대미술관', '미술관', 4, 145, 'Louisiana Museum of Modern Art', 55.9749, 12.5413)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="museum" data-id="spot-4">
+                    <div class="card-visual museum">
+                        <span class="badge">미술관</span>
+                        <i class="fa-solid fa-landmark-dome"></i>
+                        <h4>Glyptoteket</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>글립토테크 미술관</h3>
+                            <p>고대 조각상과 아열대 야자수 온실이 있는 웅장한 미술관.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 135 DKK (약 27,000원)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 2시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-4', '글립토테크 미술관', '미술관', 2, 135, 'Ny Carlsberg Glyptotek', 55.6726, 12.5723)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="museum" data-id="spot-5">
+                    <div class="card-visual museum">
+                        <span class="badge">디자인박물관</span>
+                        <i class="fa-solid fa-chair"></i>
+                        <h4>Designmuseum</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>덴마크 디자인 박물관</h3>
+                            <p>북유럽 가구 디자인 역사와 의자 변천사를 집대성한 곳.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 140 DKK (약 28,000원)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 2시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-5', '덴마크 디자인 박물관', '미술관', 2, 140, 'Designmuseum Danmark', 55.6865, 12.5908)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 야외활동 / 공원 / 수영 -->
+                <div class="card" data-category="outdoor" data-id="spot-6">
+                    <div class="card-visual outdoor">
+                        <span class="badge">야외수영</span>
+                        <i class="fa-solid fa-person-swimming"></i>
+                        <h4>Harbour Bath</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>브뤼게 하버 바스</h3>
+                            <p>세계 최고 수준 수질의 도심 항구 수영장 및 다이빙 명소.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 2시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-6', '아일랜드 브뤼게 하버 바스', '야외/공원', 2, 0, 'Islands Brygge Harbour Bath', 55.6672, 12.5753)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="outdoor" data-id="spot-7">
+                    <div class="card-visual outdoor">
+                        <span class="badge">도심공원</span>
+                        <i class="fa-solid fa-tree"></i>
+                        <h4>Kongens Have</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>왕의 정원 (Kongens Have)</h3>
+                            <p>로센보르 성 주변의 탁 트인 잔디밭에서 즐기는 여유로운 산책.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 1.5시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-7', '왕의 정원 산책', '야외/공원', 1.5, 0, 'Kongens Have, Copenhagen', 55.6844, 12.5779)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 로컬 시장 -->
+                <div class="card" data-category="market" data-id="spot-8">
+                    <div class="card-visual market">
+                        <span class="badge">푸드마켓</span>
+                        <i class="fa-solid fa-store"></i>
+                        <h4>Torvehallerne</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>토르베할레른 시장</h3>
+                            <p>유리온실 형태의 거대 실내 푸드마켓과 스뫼레브뢰드 맛집.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료 (자율 취식)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 1.5시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-8', '토르베할레른 로컬 시장', '로컬시장', 1.5, 0, 'TorvehallerneKBH', 55.6830, 12.5714)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. 쇼핑 -->
+                <div class="card" data-category="shopping" data-id="spot-9">
+                    <div class="card-visual shop">
+                        <span class="badge">가구 편집숍</span>
+                        <i class="fa-solid fa-couch"></i>
+                        <h4>Illums Bolighus</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>일룸스 볼리후스 ★4.4</h3>
+                            <p>스트로겟 중심가에 위치한 프리미엄 북유럽 가구 및 인테리어 성지.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료 (쇼핑 자율)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 1.5시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-9', '일룸스 볼리후스 가구샵', '쇼핑', 1.5, 0, 'Illums Bolighus', 55.6791, 12.5786)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="shopping" data-id="spot-10">
+                    <div class="card-visual shop">
+                        <span class="badge">오리지널 빈티지</span>
+                        <i class="fa-solid fa-chair"></i>
+                        <h4>KLASSIK Moderne</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>클라식 빈티지 ★4.6</h3>
+                            <p>20세기 북유럽 마스터들의 오리지널 빈티지 가구 쇼룸.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 무료 (관람 자유)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 1시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-10', '클라식 빈티지 가구 샵', '쇼핑', 1, 0, 'KLASSIK Moderne Møbelkunst', 55.6812, 12.5854)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 맛집 -->
+                <div class="card" data-category="food" data-id="spot-11">
+                    <div class="card-visual food">
+                        <span class="google-rating">★ 4.6</span>
+                        <span class="badge">수제버거</span>
+                        <i class="fa-solid fa-burger"></i>
+                        <h4>Gasoline Grill</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>가솔린 그릴 ★4.6</h3>
+                            <p>주유소를 개조해 만든 코펜하겐 최고의 전설적인 수제버거 맛집.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 없음 (식사비 별도)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 1시간</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-11', '가솔린 그릴 수제버거', '맛집', 1, 0, 'Gasoline Grill Landgreven', 55.6821, 12.5832)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-category="food" data-id="spot-12">
+                    <div class="card-visual food">
+                        <span class="google-rating">★ 4.7</span>
+                        <span class="badge">베이커리</span>
+                        <i class="fa-solid fa-bread-slice"></i>
+                        <h4>Juno the bakery</h4>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h3>주노 베이커리 ★4.7</h3>
+                            <p>북유럽 최고의 카다멈 번과 페이스트리로 유명한 극찬 베이커리.</p>
+                        </div>
+                        <div class="card-fee"><i class="fa-solid fa-ticket"></i> 입장료: 없음 (베이커리 별도)</div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 45분</span>
+                            <button class="btn-add" onclick="toggleCourse('spot-12', '주노 더 베이커리', '맛집', 0.75, 0, 'Juno the bakery', 55.7011, 12.5872)">
+                                <i class="fa-solid fa-plus"></i> 담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
+            <!-- 최종 타임라인 결과 박스 -->
             <div class="itinerary-timeline" id="itineraryTimeline">
-                <h4><i class="fa-solid fa-map-location-dot"></i> 맞춤형 몇 박 며칠 타임라인 & 이동 동선 가이드</h4>
+                <h3 style="font-size: 1.2rem; color: var(--primary); margin-bottom: 15px;"><i class="fa-solid fa-route"></i> 맞춤형 몇 박 며칠 타임라인 & 예산 가이드</h3>
                 <div id="timelineContent"></div>
             </div>
-        </div>
 
-        <!-- 카테고리 필터 탭 -->
-        <div class="section-header">
-            <h2>✨ 카테고리별 추천 스팟</h2>
-            <p>원하는 분야를 선택하여 탐색해보세요.</p>
-        </div>
-
-        <div class="filter-buttons">
-            <button class="filter-btn active" onclick="filterSelection('all', event)">전체보기</button>
-            <button class="filter-btn" onclick="filterSelection('landmark', event)">🏛️ 랜드마크</button>
-            <button class="filter-btn" onclick="filterSelection('museum', event)">🖼️ 박물관·미술관</button>
-            <button class="filter-btn" onclick="filterSelection('outdoor', event)">🌳 야외활동·공원·수영</button>
-            <button class="filter-btn" onclick="filterSelection('market', event)">🛒 로컬 시장</button>
-            <button class="filter-btn" onclick="filterSelection('shopping', event)">🪑 빈티지·가구 쇼핑</button>
-            <button class="filter-btn" onclick="filterSelection('food', event)">⭐ 맛집·카페 (4.0+)</button>
-        </div>
-
-        <!-- 카드 그리드 시스템 -->
-        <div class="grid" id="cardGrid">
-            
-            <!-- 1. 랜드마크 -->
-            <div class="card" data-category="landmark" data-id="spot-1" id="landmarks">
-                <div class="card-visual">
-                    <span class="badge">랜드마크</span>
-                    <i class="fa-solid fa-ship"></i>
-                    <h4>Nyhavn Canal</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>뉘하운 (Nyhavn)</h3>
-                        <p>알록달록한 17세기 타운하우스와 목선이 정박된 코펜하겐의 상징적인 항구 거리.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-1', '뉘하운 항구', '랜드마크', 2, 'Nyhavn, Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="landmark" data-id="spot-2">
-                <div class="card-visual">
-                    <span class="badge">랜드마크</span>
-                    <i class="fa-solid fa-ferris-wheel"></i>
-                    <h4>Tivoli Gardens</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>티볼리 공원 (Tivoli Gardens)</h3>
-                        <p>1843년에 개장한 세계에서 가장 매혹적인 유원지. 밤이 되면 환상적인 야경과 공연이 펼쳐짐.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 3시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-2', '티볼리 공원', '랜드마크', 3, 'Tivoli Gardens, Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. 박물관 / 미술관 -->
-            <div class="card" data-category="museum" data-id="spot-3" id="museums">
-                <div class="card-visual museum">
-                    <span class="badge">미술관</span>
-                    <i class="fa-solid fa-palette"></i>
-                    <h4>Louisiana Museum</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>루이지애나 현대미술관 (Louisiana)</h3>
-                        <p>바다가 내려다보이는 조각 정원과 세계 최고 수준의 현대미술 컬렉션 (시내에서 기차 35분).</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 4시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-3', '루이지애나 현대미술관', '박물관/미술관', 4, 'Louisiana Museum of Modern Art')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="museum" data-id="spot-4">
-                <div class="card-visual museum">
-                    <span class="badge">미술관</span>
-                    <i class="fa-solid fa-landmark-dome"></i>
-                    <h4>Ny Carlsberg Glyptotek</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>글립토테크 미술관 (Glyptoteket)</h3>
-                        <p>고대 그리스·로마 조각상과 아열대 야자수가 가득한 아름다운 유리온실 정원이 있는 웅장한 미술관.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-4', '글립토테크 미술관', '박물관/미술관', 2, 'Ny Carlsberg Glyptotek')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="museum" data-id="spot-5">
-                <div class="card-visual museum">
-                    <span class="badge">디자인박물관</span>
-                    <i class="fa-solid fa-chair"></i>
-                    <h4>Designmuseum Danmark</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>덴마크 디자인 박물관 (Designmuseum)</h3>
-                        <p>덴마크 가구 디자인의 역사, 의자 디자인의 변천사, 일상 속 북유럽 디자인 철학을 집대성한 곳.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-5', '덴마크 디자인 박물관', '박물관/미술관', 2, 'Designmuseum Danmark')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="museum" data-id="spot-6">
-                <div class="card-visual museum">
-                    <span class="badge">현대미술</span>
-                    <i class="fa-solid fa-cube"></i>
-                    <h4>Copenhagen Contemporary</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>코펜하겐 컨템포러리 (CC)</h3>
-                        <p>Refshaleøen 옛 공장 부지에 위치한 거대한 규모의 대형 설치 미술 및 현대미술 전문 센터.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-6', '코펜하겐 컨템포러리 미술관', '박물관/미술관', 2, 'Copenhagen Contemporary')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. 야외활동 / 공원 / 수영 -->
-            <div class="card" data-category="outdoor" data-id="spot-7" id="outdoor">
-                <div class="card-visual outdoor">
-                    <span class="badge">야외수영</span>
-                    <i class="fa-solid fa-person-swimming"></i>
-                    <h4>Harbour Bath</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>아일랜드 브뤼게 하버 바스</h3>
-                        <p>세계 최고 수준의 수질을 자랑하는 도심 항구 수영장. 현지인처럼 다이빙과 야외 수영 즐기기.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 2시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-7', '아일랜드 브뤼게 하버 바스', '야외수영/공원', 2, 'Islands Brygge Harbour Bath')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="outdoor" data-id="spot-8">
-                <div class="card-visual outdoor">
-                    <span class="badge">도심공원</span>
-                    <i class="fa-solid fa-tree"></i>
-                    <h4>Kongens Have</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>왕의 정원 (Kongens Have)</h3>
-                        <p>로센보르 성 주변의 탁 트인 잔디밭에서 즐기는 여유로운 피크닉과 산책, 야외 휴식.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-8', '왕의 정원 산책', '야외수영/공원', 1.5, 'Kongens Have, Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. 로컬 시장 -->
-            <div class="card" data-category="market" data-id="spot-9" id="markets">
-                <div class="card-visual market">
-                    <span class="badge">푸드마켓</span>
-                    <i class="fa-solid fa-store"></i>
-                    <h4>Torvehallerne</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>토르베할레른 시장 (Torvehallerne)</h3>
-                        <p>유리온실 형태의 거대 실내 푸드마켓. 스뫼레브뢰드, 신선한 디저트, 과일, 커피를 한곳에서!</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-9', '토르베할레른 로컬 시장', '로컬시장', 1.5, 'TorvehallerneKBH')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="market" data-id="spot-10">
-                <div class="card-visual market">
-                    <span class="badge">스트리트푸드</span>
-                    <i class="fa-solid fa-utensils"></i>
-                    <h4>Broens Gadekøkken</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>브론스 스트리트 푸드 (Broens)</h3>
-                        <p>뉘하운 맞은편 항구 다리 건너에 위치한 야외 푸드트럭 마켓. 탁 트인 뷰와 글로벌 미식.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-10', '브론스 스트리트 푸드 마켓', '로컬시장', 1, 'Broens Gadekøkken')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. 빈티지 & 가구/조명 샵 (쇼핑 파트) -->
-            <div class="card" data-category="shopping" data-id="spot-11" id="shopping">
-                <div class="card-visual shop">
-                    <span class="badge">가구 편집숍</span>
-                    <i class="fa-solid fa-couch"></i>
-                    <h4>Illums Bolighus</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>일룸스 볼리후스 (Illums Bolighus) ★4.4</h3>
-                        <p>스트로겟 중심가에 위치한 덴마크 디자인의 성지. 프리츠 한센부터 북유럽 가구, 조명, 인테리어의 모든 것.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-11', '일룸스 볼리후스 가구샵', '쇼핑/가구', 1.5, 'Illums Bolighus')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="shopping" data-id="spot-12">
-                <div class="card-visual shop">
-                    <span class="badge">오리지널 빈티지</span>
-                    <i class="fa-solid fa-chair"></i>
-                    <h4>KLASSIK Moderne</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>클라식 (KLASSIK Moderne Møbelkunst) ★4.6</h3>
-                        <p>아르네 야콥센, 한스 웨그너 등 20세기 북유럽 마스터들의 인증된 오리지널 빈티지 가구 전문 쇼룸.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-12', '클라식 빈티지 가구 샵', '쇼핑/빈티지', 1, 'KLASSIK Moderne Møbelkunst')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="shopping" data-id="spot-13">
-                <div class="card-visual shop">
-                    <span class="badge">디자인 플래그십</span>
-                    <i class="fa-solid fa-house-chimney"></i>
-                    <h4>HAY House</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>헤이 하우스 (HAY House) ★4.5</h3>
-                        <p>현대 덴마크 디자인을 대표하는 HAY의 플래그십 쇼룸. 감각적인 가구, 조명, 소품 및 미니 마켓.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-13', '헤이 하우스 (HAY House)', '쇼핑/가구', 1, 'HAY House Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="shopping" data-id="spot-14">
-                <div class="card-visual shop">
-                    <span class="badge">패션 빈티지</span>
-                    <i class="fa-solid fa-shirt"></i>
-                    <h4>Time's Up Vintage</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>타임즈 업 빈티지 (Time's Up Vintage)</h3>
-                        <p>코펜하겐 패셔니스타들이 사랑하는 유니크한 하이엔드 의류 및 레트로 패션 빈티지 샵.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-14', '타임즈 업 패션 빈티지 샵', '쇼핑/빈티지', 1, 'Time\'s Up Vintage Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. 구글 4.0 이상 맛집 및 카페 -->
-            <div class="card" data-category="food" data-id="spot-15" id="food">
-                <div class="card-visual food">
-                    <span class="google-rating">★ 4.6</span>
-                    <span class="badge">수제버거</span>
-                    <i class="fa-solid fa-burger"></i>
-                    <h4>Gasoline Grill</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>가솔린 그릴 (Gasoline Grill) ★4.6</h3>
-                        <p>주유소를 개조해 만든 전설적인 버거집. 신선한 패티와 완벽한 번으로 코펜하겐 최고의 수제버거.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-15', '가솔린 그릴 수제버거 (맛집 4.6)', '맛집/카페', 1, 'Gasoline Grill Landgreven')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="food" data-id="spot-16">
-                <div class="card-visual food">
-                    <span class="google-rating">★ 4.7</span>
-                    <span class="badge">베이커리</span>
-                    <i class="fa-solid fa-bread-slice"></i>
-                    <h4>Juno the bakery</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>주노 더 베이커리 (Juno the bakery) ★4.7</h3>
-                        <p>북유럽 최고의 카다멈 번과 페이스트리로 유명한 곳. 항상 줄을 서서 먹는 현지인 극찬 베이커리.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 45분</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-16', '주노 더 베이커리 (카페 4.7)', '맛집/카페', 0.75, 'Juno the bakery')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="food" data-id="spot-17">
-                <div class="card-visual food">
-                    <span class="google-rating">★ 4.5</span>
-                    <span class="badge">씨푸드</span>
-                    <i class="fa-solid fa-fish"></i>
-                    <h4>Fiskebar</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>미트팩킹 피스카바 (Fiskebar) ★4.5</h3>
-                        <p>미트팩킹 지구에 위치한 힙한 해산물 전문 레스토랑. 신선한 굴과 생선 요리.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1.5시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-17', '미트팩킹 피스카바 해산물 (맛집 4.5)', '맛집/카페', 1.5, 'Kødbyens Fiskebar')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" data-category="food" data-id="spot-18">
-                <div class="card-visual food">
-                    <span class="google-rating">★ 4.4</span>
-                    <span class="badge">브런치카페</span>
-                    <i class="fa-solid fa-mug-saucer"></i>
-                    <h4>Atelier September</h4>
-                </div>
-                <div class="card-body">
-                    <div>
-                        <h3>아뜰리에 셉템버 ★4.4</h3>
-                        <p>감각적인 미니멀 인테리어와 전설적인 아보카도 토스트, 드립 커피로 유명한 감성 카페.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fa-solid fa-clock"></i> 소요 1시간</span>
-                        <button class="btn-add" onclick="toggleCourse('spot-18', '아뜰리에 셉템버 브런치카페 (★4.4)', '맛집/카페', 1, 'Atelier September Copenhagen')">
-                            <i class="fa-solid fa-plus"></i> 일정에 담기
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- 지도 섹션 -->
-        <section class="map-section" id="map-section">
-            <div class="section-header" style="margin-bottom: 20px;">
-                <h2>🗺️ 코펜하겐 실시간 인터랙티브 지도</h2>
-                <p>선택한 명소들의 위치를 파악하고 동선을 구상해보세요.</p>
-            </div>
-            <div class="map-container">
-                <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=12.55%2C55.67%2C12.60%2C55.69&amp;layer=mapnik&amp;marker=55.68%2C12.57" allowfullscreen></iframe>
-            </div>
-        </section>
-
+        </main>
     </div>
 
-    <!-- 푸터 -->
-    <footer>
-        <p>&copy; 2026 Copenhagen Ultimate Hub. All rights reserved.</p>
-    </footer>
-
-    <!-- 자바스크립트 로직 -->
+    <!-- Leaflet JS (인터랙티브 지도 라이브러리) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         let mySelectedCourse = [];
+        
+        // 지도 초기화 (코펜하겐 중심 좌표 기준)
+        const map = L.map('liveMap').setView([55.6761, 12.5683], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
 
-        function toggleCourse(id, title, category, hours, queryKeyword) {
+        let mapMarkers = {};
+
+        function toggleCourse(id, title, category, hours, ticketFee, queryKeyword, lat, lng) {
             const index = mySelectedCourse.findIndex(item => item.id === id);
 
             if (index > -1) {
                 mySelectedCourse.splice(index, 1);
+                if (mapMarkers[id]) {
+                    map.removeLayer(mapMarkers[id]);
+                    delete mapMarkers[id];
+                }
             } else {
                 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(queryKeyword)}`;
-                mySelectedCourse.push({ id, title, category, hours, mapUrl });
+                mySelectedCourse.push({ id, title, category, hours, ticketFee, mapUrl, lat, lng });
+                
+                const marker = L.marker([lat, lng]).addTo(map)
+                    .bindPopup(`<b>${title}</b><br>${category} (입장료: ${ticketFee} DKK)`);
+                mapMarkers[id] = marker;
             }
 
             updateCardButtons();
-            renderCourseBox();
+            renderSidebarCourseBox();
             document.getElementById('itineraryTimeline').style.display = 'none';
         }
 
         function removeCourse(id) {
             mySelectedCourse = mySelectedCourse.filter(item => item.id !== id);
+            
+            if (mapMarkers[id]) {
+                map.removeLayer(mapMarkers[id]);
+                delete mapMarkers[id];
+            }
+
             updateCardButtons();
-            renderCourseBox();
+            renderSidebarCourseBox();
             document.getElementById('itineraryTimeline').style.display = 'none';
         }
 
@@ -999,37 +863,54 @@
 
                 if (isSelected) {
                     btn.classList.add('added');
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i> 담김 완료';
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> 담김';
                 } else {
                     btn.classList.remove('added');
-                    btn.innerHTML = '<i class="fa-solid fa-plus"></i> 일정에 담기';
+                    btn.innerHTML = '<i class="fa-solid fa-plus"></i> 담기';
                 }
             });
         }
 
-        function renderCourseBox() {
+        function renderSidebarCourseBox() {
             const container = document.getElementById('courseContainer');
             const countBadge = document.getElementById('courseCount');
             const timeInfo = document.getElementById('totalTimeInfo');
             const actionsDiv = document.getElementById('courseActions');
+            
+            const sumTicketElem = document.getElementById('sumTicketFee');
+            const sumTransportElem = document.getElementById('sumTransportFee');
+            const sumTotalElem = document.getElementById('sumTotalFee');
 
             countBadge.innerText = `${mySelectedCourse.length}개`;
 
             if (mySelectedCourse.length === 0) {
-                container.innerHTML = `<div class="course-empty-msg">아직 담긴 장소가 없습니다. 아래 카드에서 <strong>[+ 일정에 담기]</strong>를 눌러보세요!</div>`;
+                container.innerHTML = `<div class="course-empty-msg">아직 담긴 장소가 없습니다.<br>오른쪽 카드에서 <strong>[+ 담기]</strong>를 눌러보세요!</div>`;
                 timeInfo.innerText = "총 예상 소요 시간: 0시간 (0박 0일)";
+                sumTicketElem.innerText = "0 DKK (약 0원)";
+                sumTransportElem.innerText = "0 DKK (약 0원)";
+                sumTotalElem.innerText = "0 DKK (약 0원)";
                 actionsDiv.style.display = 'none';
                 return;
             }
 
             let totalHours = mySelectedCourse.reduce((sum, item) => sum + item.hours, 0);
-            
             let totalDays = Math.ceil(totalHours / 7);
             if (totalDays < 1) totalDays = 1;
             let nights = totalDays > 1 ? totalDays - 1 : 0;
             
-            timeInfo.innerText = `총 예상 소요 시간: 약 ${totalHours}시간 (${nights}박 ${totalDays}일 코스)`;
-            actionsDiv.style.display = 'flex';
+            // 입장료 합계 (DKK, 환율 1 DKK = 약 200원 기준 계산)
+            let totalTicketDKK = mySelectedCourse.reduce((sum, item) => sum + item.ticketFee, 0);
+            
+            // 교통비 계산 (일자별 대중교통 패스 기준 하루 약 90 DKK 산정)
+            let totalTransportDKK = totalDays * 90;
+            let grandTotalDKK = totalTicketDKK + totalTransportDKK;
+
+            sumTicketElem.innerText = `${totalTicketDKK} DKK (약 ${(totalTicketDKK * 200).toLocaleString()}원)`;
+            sumTransportElem.innerText = `${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)`;
+            sumTotalElem.innerText = `${grandTotalDKK} DKK (약 ${(grandTotalDKK * 200).toLocaleString()}원)`;
+
+            timeInfo.innerText = `총 약 ${totalHours}시간 (${nights}박 ${totalDays}일 코스)`;
+            actionsDiv.style.display = 'block';
 
             let html = '<div class="course-list">';
             mySelectedCourse.forEach((item, idx) => {
@@ -1037,11 +918,11 @@
                     <div class="course-item">
                         <div class="course-item-info">
                             <h4>${idx + 1}. ${item.title}</h4>
-                            <span>분류: ${item.category} | 예상 소요: ${item.hours}시간</span>
+                            <span>${item.category} | 입장료: ${item.ticketFee} DKK</span>
                         </div>
                         <div class="course-item-btns">
-                            <a href="${item.mapUrl}" target="_blank" class="btn-map-link"><i class="fa-solid fa-location-dot"></i> 구글 지도 보기</a>
-                            <button class="btn-remove" onclick="removeCourse('${item.id}')">삭제</button>
+                            <a href="${item.mapUrl}" target="_blank" class="btn-map-link" title="구글지도"><i class="fa-solid fa-location-dot"></i></a>
+                            <button class="btn-remove" onclick="removeCourse('${item.id}')" title="삭제">×</button>
                         </div>
                     </div>
                 `;
@@ -1076,39 +957,34 @@
 
             let totalDays = days.length;
             let nights = totalDays > 1 ? totalDays - 1 : 0;
-
-            let html = `<p style="margin-bottom: 15px; font-weight: 600; color: var(--primary);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 일정표입니다.</p>`;
             
-            let times = ["09:30 AM (오전 일정)", "12:30 PM (점심 & 미식 탐방)", "03:00 PM (오후 일정)", "06:00 PM (저녁 & 야경 일정)"];
+            let totalTicketDKK = mySelectedCourse.reduce((sum, item) => sum + item.ticketFee, 0);
+            let totalTransportDKK = totalDays * 90;
+            let grandTotalDKK = totalTicketDKK + totalTransportDKK;
+
+            let html = `
+                <div style="margin-bottom: 15px; padding: 12px; background: #f1f5f9; border-radius: 10px;">
+                    <p style="font-weight: 700; color: var(--primary);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 동선 및 예산 안내</p>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">• 입장료 총액: ${totalTicketDKK} DKK (약 ${(totalTicketDKK * 200).toLocaleString()}원)</p>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">• 대중교통비 총액: ${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)</p>
+                    <p style="font-size: 0.95rem; font-weight: 700; color: #0284c7; margin-top: 4px;">• 최종 예상 경비 합계: ${grandTotalDKK} DKK (약 ${(grandTotalDKK * 200).toLocaleString()}원)</p>
+                </div>
+            `;
+            
+            let times = ["09:30 AM", "12:30 PM", "03:00 PM", "06:00 PM"];
 
             days.forEach((dayItems, dayIndex) => {
-                let dayNum = dayIndex + 1;
-                html += `
-                    <div class="day-group">
-                        <div class="day-title">📌 ${dayNum}일차 일정</div>
-                `;
+                html += `<div class="day-group"><div class="day-title">📌 ${dayIndex + 1}일차 일정</div>`;
 
                 dayItems.forEach((item, idx) => {
                     let timeSlot = times[idx % times.length];
-                    let tip = "메트로 M1/M2 노선 및 공유 자전거 이동 최적 동선";
-
-                    if (item.category.includes('박물관') || item.category.includes('쇼핑')) {
-                        tip = "도심 중심가 및 Bredgade/스트로겟 쇼핑 거리 인근 도보 이동 추천";
-                    } else if (item.category.includes('맛집')) {
-                        tip = "구글 4.0점 이상 검증된 핫플! 사전 예약 또는 피크타임 피해서 방문 추천";
-                    } else if (item.category.includes('야외')) {
-                        tip = "맑은 날씨에 산책 및 수영 장비를 챙겨 방문하세요.";
-                    }
-
                     html += `
                         <div class="timeline-step">
                             <strong>[${timeSlot}] ${item.title}</strong>
-                            <p style="font-size: 0.95rem; color: var(--text-main); margin: 4px 0;">분류: ${item.category} (소요 ${item.hours}시간)</p>
-                            <p style="font-size: 0.85rem; color: var(--accent);"><i class="fa-solid fa-person-walking-arrow-right"></i> 이동 및 동선 팁: ${tip} | <a href="${item.mapUrl}" target="_blank" style="color: var(--accent); font-weight: 600;">[구글지도 길찾기 열기]</a></p>
+                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">분류: ${item.category} | 입장료: ${item.ticketFee} DKK | <a href="${item.mapUrl}" target="_blank" style="color: #0284c7; font-weight: 600;">길찾기</a></p>
                         </div>
                     `;
                 });
-
                 html += `</div>`;
             });
 
@@ -1134,23 +1010,14 @@
                     currentDayHours += item.hours;
                 }
             });
-            if (currentDayItems.length > 0) {
-                days.push(currentDayItems);
-            }
+            if (currentDayItems.length > 0) days.push(currentDayItems);
 
-            let csvContent = "\uFEFF일차,순번,장소명,카테고리,예상소요시간(시간),구글지도링크\n";
+            let csvContent = "\uFEFF일차,순번,장소명,카테고리,소요시간(시간),입장료(DKK),구글지도링크\n";
             
             days.forEach((dayItems, dayIndex) => {
                 let dayNum = dayIndex + 1;
                 dayItems.forEach((item, idx) => {
-                    let row = [
-                        `"${dayNum}일차"`,
-                        idx + 1,
-                        `"${item.title.replace(/"/g, '""')}"`,
-                        `"${item.category}"`,
-                        item.hours,
-                        `"${item.mapUrl}"`
-                    ].join(",");
+                    let row = [`"${dayNum}일차"`, idx + 1, `"${item.title}"`, `"${item.category}"`, item.hours, item.ticketFee, `"${item.mapUrl}"`].join(",");
                     csvContent += row + "\n";
                 });
             });
@@ -1159,7 +1026,7 @@
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", "Copenhagen_Itinerary.csv");
+            link.setAttribute("download", "Copenhagen_Itinerary_Budget.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1170,9 +1037,7 @@
             const buttons = document.querySelectorAll('.filter-btn');
 
             buttons.forEach(btn => btn.classList.remove('active'));
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
+            if (event && event.target) event.target.classList.add('active');
 
             cards.forEach(card => {
                 if (category === 'all' || card.getAttribute('data-category') === category) {
