@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copenhagen Ultimate Hub | Vintage Seaside Edition</title>
+    <title>Your Copenhagen Guide</title>
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
-            --vintage-pink: #f2c6c2;    /* 2번 사진의 감성적인 빈티지 분홍 */
-            --vintage-yellow: #f5e4b5;  /* 1번 사진의 부드러운 연노랑 */
-            --vintage-sky: #7a9eb1;     /* 2번 사진의 바다와 하늘빛 (포인트) */
-            --vintage-charcoal: #2d3136;/* 깔끔하고 진한 차콜 (포인트) */
-            --card-bg: rgba(255, 255, 255, 0.92); /* 배경 이미지가 은은하게 비치는 반투명 카드 */
+            --vintage-pink: #f2c6c2;    /* 부드러운 빈티지 분홍 */
+            --vintage-yellow: #f5e4b5;  /* 부드러운 연노랑 */
+            --vintage-sky: #7a9eb1;     /* 포인트 스카이 블루 */
+            --vintage-charcoal: #2d3136;/* 진한 차콜 */
+            --card-bg: rgba(255, 255, 255, 0.93); /* 배경이 은은하게 비치는 반투명 카드 */
             --text-main: #2b2f33;
             --text-light: #5a626a;
             --radius: 16px;
@@ -30,17 +30,19 @@
         }
 
         body {
-            /* 2번 사진의 하늘, 바다, 모래사장 느낌을 빈티지스럽게 표현한 배경 이미지 및 그라데이션 오버레이 */
-            background: linear-gradient(rgba(45, 49, 54, 0.65), rgba(45, 49, 54, 0.65)), 
-                        url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            /* 업로드해주신 코펜하겐 사진을 배경으로 지정하고 빈티지 그림(세피아/대비 조절) 필터 효과 적용 */
+            background: linear-gradient(rgba(45, 49, 54, 0.55), rgba(45, 49, 54, 0.65)), 
+                        url('코펜하겐.jpg') no-repeat center center fixed;
             background-size: cover;
+            filter: contrast(1.05) saturate(0.9);
             color: var(--text-main);
             display: flex;
             min-height: 100vh;
         }
 
-        /* 벤토 대시보드 레이아웃 구조 */
+        /* 내용물은 필터 영향 안 받도록 정상 렌더링 유지 */
         .app-container {
+            filter: none;
             display: flex;
             width: 100%;
             max-width: 1600px;
@@ -53,13 +55,13 @@
         .sidebar {
             width: 400px;
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border-radius: var(--radius);
             padding: 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             position: sticky;
             top: 24px;
             height: calc(100vh - 48px);
@@ -95,7 +97,7 @@
         }
 
         .cost-summary-box {
-            background: rgba(245, 228, 181, 0.25);
+            background: rgba(245, 228, 181, 0.3);
             border: 1px solid var(--vintage-yellow);
             border-radius: 8px;
             padding: 12px 16px;
@@ -137,7 +139,7 @@
         }
 
         .course-item {
-            background: rgba(242, 198, 194, 0.2);
+            background: rgba(242, 198, 194, 0.25);
             padding: 12px 15px;
             border-radius: 8px;
             display: flex;
@@ -164,7 +166,7 @@
         }
 
         .btn-map-link {
-            background: rgba(122, 158, 177, 0.2);
+            background: rgba(122, 158, 177, 0.25);
             color: var(--vintage-charcoal);
             text-decoration: none;
             padding: 6px 8px;
@@ -236,7 +238,7 @@
             color: var(--vintage-charcoal);
             padding: 40px;
             border-radius: var(--radius);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -259,7 +261,7 @@
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -317,7 +319,7 @@
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             transition: var(--transition);
             border: 2px solid var(--vintage-charcoal);
             display: flex;
@@ -327,7 +329,7 @@
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
 
         .card-visual {
@@ -451,7 +453,7 @@
             border-radius: var(--radius);
             padding: 24px;
             display: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -466,7 +468,7 @@
         }
 
         .timeline-step {
-            background: rgba(245, 228, 181, 0.2);
+            background: rgba(245, 228, 181, 0.25);
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -515,8 +517,8 @@
         <main class="main-content">
             
             <header class="bento-hero">
-                <h1>코펜하겐 빈티지 씨사이드 허브</h1>
-                <p>따뜻한 연노랑과 부드러운 분홍빛 무드 속에서, 탁 트인 바다와 모래사장의 감성을 담아 나만의 일정을 설계해 보세요.</p>
+                <h1>Your Copenhagen Guide</h1>
+                <p>따뜻한 감성과 빈티지 무드 속에서, 박물관·미술관·편집숍부터 미식 맛집까지 직접 담아 나만의 일정을 설계해 보세요.</p>
             </header>
 
             <section class="bento-map-card">
@@ -525,7 +527,7 @@
             </section>
 
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <h2 style="font-size: 1.4rem; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
+                <h2 style="font-size: 1.4rem; color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.6); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
                 <div class="filter-buttons">
                     <button class="filter-btn active" onclick="filterSelection('all', event)">전체보기</button>
                     <button class="filter-btn" onclick="filterSelection('landmark', event)">🏛️ 랜드마크</button>
@@ -965,7 +967,7 @@
             let grandTotalDKK = totalTicketDKK + totalTransportDKK;
 
             let html = `
-                <div style="margin-bottom: 15px; padding: 12px; background: rgba(245, 228, 181, 0.3); border-radius: 8px; border: 1px solid var(--vintage-yellow);">
+                <div style="margin-bottom: 15px; padding: 12px; background: rgba(245, 228, 181, 0.35); border-radius: 8px; border: 1px solid var(--vintage-yellow);">
                     <p style="font-weight: 700; color: var(--vintage-charcoal);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 동선 및 예산 안내</p>
                     <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">• 입장료 총액: ${totalTicketDKK} DKK (약 ${(totalTicketDKK * 200).toLocaleString()}원)</p>
                     <p style="font-size: 0.9rem; color: var(--text-light);">• 대중교통비 총액: ${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)</p>
