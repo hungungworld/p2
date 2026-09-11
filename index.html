@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
-            --vintage-pink: #f2c6c2;    /* 부드러운 빈티지 분홍 */
+            --vintage-pink: #f2c6c2;    /* 감성적인 빈티지 분홍 */
             --vintage-yellow: #f5e4b5;  /* 부드러운 연노랑 */
             --vintage-sky: #7a9eb1;     /* 포인트 스카이 블루 */
             --vintage-charcoal: #2d3136;/* 진한 차콜 */
-            --card-bg: rgba(255, 255, 255, 0.93); /* 배경이 은은하게 비치는 반투명 카드 */
+            --card-bg: rgba(255, 255, 255, 0.94); /* 배경 일러스트가 은은하게 비치는 고급 반투명 카드 */
             --text-main: #2b2f33;
             --text-light: #5a626a;
             --radius: 16px;
@@ -30,17 +30,17 @@
         }
 
         body {
-            /* 업로드해주신 코펜하겐 사진을 배경으로 지정하고 빈티지 그림(세피아/대비 조절) 필터 효과 적용 */
-            background: linear-gradient(rgba(45, 49, 54, 0.55), rgba(45, 49, 54, 0.65)), 
-                        url('코펜하겐.jpg') no-repeat center center fixed;
+            /* 업로드해주신 코펜하겐 풍경 사진을 배경으로 깔고, 수채화 일러스트 느낌의 빈티지 필터 효과 적용 */
+            background: linear-gradient(rgba(30, 35, 40, 0.45), rgba(30, 35, 40, 0.55)), 
+                        url('코펜하겐_2.jpg') no-repeat center center fixed;
             background-size: cover;
-            filter: contrast(1.05) saturate(0.9);
+            filter: contrast(1.08) saturate(0.85) brightness(0.98);
             color: var(--text-main);
             display: flex;
             min-height: 100vh;
         }
 
-        /* 내용물은 필터 영향 안 받도록 정상 렌더링 유지 */
+        /* 대시보드 내부 컨텐츠 영역은 필터 영향 없이 선명하게 유지 */
         .app-container {
             filter: none;
             display: flex;
@@ -61,7 +61,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             position: sticky;
             top: 24px;
             height: calc(100vh - 48px);
@@ -97,7 +97,7 @@
         }
 
         .cost-summary-box {
-            background: rgba(245, 228, 181, 0.3);
+            background: rgba(245, 228, 181, 0.35);
             border: 1px solid var(--vintage-yellow);
             border-radius: 8px;
             padding: 12px 16px;
@@ -139,7 +139,7 @@
         }
 
         .course-item {
-            background: rgba(242, 198, 194, 0.25);
+            background: rgba(242, 198, 194, 0.3);
             padding: 12px 15px;
             border-radius: 8px;
             display: flex;
@@ -166,7 +166,7 @@
         }
 
         .btn-map-link {
-            background: rgba(122, 158, 177, 0.25);
+            background: rgba(122, 158, 177, 0.3);
             color: var(--vintage-charcoal);
             text-decoration: none;
             padding: 6px 8px;
@@ -238,7 +238,7 @@
             color: var(--vintage-charcoal);
             padding: 40px;
             border-radius: var(--radius);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -261,7 +261,7 @@
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -319,7 +319,7 @@
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             transition: var(--transition);
             border: 2px solid var(--vintage-charcoal);
             display: flex;
@@ -329,7 +329,7 @@
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
         }
 
         .card-visual {
@@ -453,7 +453,7 @@
             border-radius: var(--radius);
             padding: 24px;
             display: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
             border: 2px solid var(--vintage-charcoal);
         }
 
@@ -468,7 +468,7 @@
         }
 
         .timeline-step {
-            background: rgba(245, 228, 181, 0.25);
+            background: rgba(245, 228, 181, 0.3);
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 8px;
