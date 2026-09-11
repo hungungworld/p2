@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copenhagen Hub | HAY Brand Edition</title>
+    <title>Copenhagen Ultimate Hub | Nordic Color Edition</title>
     <!-- Google Fonts & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,17 +11,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
-            --hay-bg: #eef0ed;         /* HAY 특유의 매트하고 차분한 라이트 웜그레이 베이스 */
-            --hay-surface: #ffffff;    /* 깨끗한 카드 표면 */
-            --hay-charcoal: #2b2d2f;   /* 깊고 모던한 차콜 (메인 타이포/버튼) */
-            --hay-yellow: #f4d03f;     /* HAY 시그니처 머스터드 옐로 */
-            --hay-green: #274e37;      /* 딥 포레스트 그린 */
-            --hay-burgundy: #7d2828;   /* 감각적인 버건디/테라코타 레드 */
-            --hay-blue: #1c4e80;       /* 미드센추리 블루 */
-            --hay-pink: #e6b8b8;       /* 소프트 피치/핑크 그레이 */
-            --text-main: #2b2d2f;
-            --text-light: #6c726e;
-            --radius: 12px;
+            --nordic-sky: #7ba4b5;      /* 2번 사진 속 청량한 스카이 블루 */
+            --nordic-yellow: #f4e29c;   /* 1번 사진 속 부드러운 버터 옐로 */
+            --nordic-green: #1b4d3e;    /* 4번 사진 속 딥 포레스트 체크 그린 */
+            --nordic-charcoal: #22252a; /* 모던 다크 차콜 */
+            --bg-color: #f7f8f6;        /* 내추럴 오프화이트 베이스 */
+            --card-bg: #ffffff;
+            --text-main: #2c302e;
+            --text-light: #6a706b;
+            --radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -33,7 +31,7 @@
         }
 
         body {
-            background-color: var(--hay-bg);
+            background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
             min-height: 100vh;
@@ -52,7 +50,7 @@
         /* 1. 사이드바 (여행 목록 & 예산 계산기) */
         .sidebar {
             width: 400px;
-            background: var(--hay-surface);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 24px;
             display: flex;
@@ -63,12 +61,12 @@
             top: 24px;
             height: calc(100vh - 48px);
             overflow-y: auto;
-            border: 2px solid var(--hay-charcoal);
+            border: 2px solid var(--nordic-charcoal);
         }
 
         .sidebar-header h3 {
             font-size: 1.3rem;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -84,8 +82,8 @@
         }
 
         .badge-count {
-            background: var(--hay-yellow);
-            color: var(--hay-charcoal);
+            background: var(--nordic-yellow);
+            color: var(--nordic-charcoal);
             padding: 2px 10px;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -93,13 +91,13 @@
         }
 
         .cost-summary-box {
-            background: #f4f5f2;
-            border: 1px solid #dcdfd9;
+            background: #f1f3f0;
+            border: 1px solid #d8ddd6;
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 15px;
             font-size: 0.88rem;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
         }
 
         .cost-summary-box div {
@@ -114,7 +112,7 @@
             border-top: 1px dashed #b5bab0;
             padding-top: 6px;
             margin-top: 6px;
-            color: var(--hay-burgundy);
+            color: var(--nordic-green);
         }
 
         .course-empty-msg {
@@ -135,18 +133,18 @@
         }
 
         .course-item {
-            background: #f4f5f2;
+            background: #f1f3f0;
             padding: 12px 15px;
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #dcdfd9;
+            border: 1px solid #d8ddd6;
         }
 
         .course-item-info h4 {
             font-size: 0.95rem;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             margin-bottom: 2px;
             font-weight: 600;
         }
@@ -162,8 +160,8 @@
         }
 
         .btn-map-link {
-            background: #e2e5de;
-            color: var(--hay-charcoal);
+            background: #e2e7e4;
+            color: var(--nordic-charcoal);
             text-decoration: none;
             padding: 6px 8px;
             border-radius: 6px;
@@ -182,7 +180,7 @@
         }
 
         .sidebar-footer {
-            border-top: 1px solid #dcdfd9;
+            border-top: 1px solid #d8ddd6;
             padding-top: 15px;
         }
 
@@ -203,21 +201,21 @@
         }
 
         .btn-action {
-            background: var(--hay-charcoal);
+            background: var(--nordic-charcoal);
             color: white;
         }
 
         .btn-action:hover {
-            background: #414448;
+            background: #3a3f44;
         }
 
         .btn-excel {
-            background: var(--hay-green);
+            background: var(--nordic-green);
             color: white;
         }
 
         .btn-excel:hover {
-            background: #1b3524;
+            background: #14382c;
         }
 
         /* 2. 메인 벤토 컨텐츠 영역 */
@@ -228,25 +226,14 @@
             gap: 24px;
         }
 
-        /* 벤토 헤더 카드 (HAY 감성 블록 컬러 조합) */
+        /* 벤토 헤더 카드 (스포이트 추출 스카이 블루 그라데이션) */
         .bento-hero {
-            background: var(--hay-surface);
-            color: var(--hay-charcoal);
+            background: linear-gradient(135deg, var(--nordic-sky) 0%, #4f788a 100%);
+            color: white;
             padding: 40px;
             border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 2px solid var(--hay-charcoal);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bento-hero::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 120px; height: 100%;
-            background: linear-gradient(135deg, var(--hay-yellow) 0%, var(--hay-burgundy) 100%);
-            opacity: 0.15;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 2px solid var(--nordic-charcoal);
         }
 
         .bento-hero h1 {
@@ -257,23 +244,23 @@
         }
 
         .bento-hero p {
-            color: var(--text-light);
+            color: #f0f4f5;
             font-size: 1rem;
             word-break: keep-all;
         }
 
         /* 벤토 지도 그리드 카드 */
         .bento-map-card {
-            background: var(--hay-surface);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 2px solid var(--hay-charcoal);
+            border: 2px solid var(--nordic-charcoal);
         }
 
         .bento-map-card h3 {
             font-size: 1.2rem;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -285,7 +272,7 @@
             width: 100%;
             height: 320px;
             border-radius: 8px;
-            border: 1px solid #dcdfd9;
+            border: 1px solid #d8ddd6;
         }
 
         /* 필터 바 */
@@ -296,20 +283,21 @@
         }
 
         .filter-btn {
-            background: var(--hay-surface);
-            border: 1px solid var(--hay-charcoal);
+            background: var(--card-bg);
+            border: 1px solid var(--nordic-charcoal);
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             font-size: 0.9rem;
             transition: var(--transition);
         }
 
         .filter-btn.active, .filter-btn:hover {
-            background: var(--hay-charcoal);
+            background: var(--nordic-green);
             color: white;
+            border-color: var(--nordic-green);
         }
 
         /* 벤토 카드 그리드 */
@@ -320,12 +308,12 @@
         }
 
         .card {
-            background: var(--hay-surface);
+            background: var(--card-bg);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.02);
             transition: var(--transition);
-            border: 2px solid var(--hay-charcoal);
+            border: 2px solid var(--nordic-charcoal);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -348,12 +336,12 @@
             text-align: center;
         }
 
-        .card-visual.landmark { background: var(--hay-blue); }
-        .card-visual.museum { background: var(--hay-burgundy); }
-        .card-visual.outdoor { background: var(--hay-green); }
+        .card-visual.landmark { background: var(--nordic-sky); }
+        .card-visual.museum { background: var(--nordic-charcoal); }
+        .card-visual.outdoor { background: var(--nordic-green); }
         .card-visual.food { background: #b85d18; }
-        .card-visual.market { background: var(--hay-charcoal); }
-        .card-visual.shop { background: #513058; }
+        .card-visual.market { background: #526e65; }
+        .card-visual.shop { background: #6b4c3b; }
 
         .card-visual i { font-size: 2.2rem; margin-bottom: 6px; }
         .card-visual h4 { font-size: 1.05rem; font-weight: 600; }
@@ -362,7 +350,7 @@
             position: absolute;
             top: 12px;
             left: 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(4px);
             color: white;
             padding: 3px 8px;
@@ -375,8 +363,8 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: var(--hay-yellow);
-            color: var(--hay-charcoal);
+            background: var(--nordic-yellow);
+            color: var(--nordic-charcoal);
             padding: 3px 8px;
             font-size: 0.7rem;
             font-weight: 700;
@@ -393,7 +381,7 @@
 
         .card-body h3 {
             font-size: 1.1rem;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             margin-bottom: 6px;
             font-weight: 700;
         }
@@ -406,28 +394,28 @@
 
         .card-fee {
             font-size: 0.8rem;
-            color: var(--hay-burgundy);
+            color: var(--nordic-green);
             font-weight: 700;
             margin-bottom: 12px;
-            background: #fdf2f2;
+            background: #eaf3f0;
             padding: 4px 8px;
             border-radius: 6px;
             display: inline-block;
-            border: 1px solid #f9d8d8;
+            border: 1px solid #cce5dc;
         }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #dcdfd9;
+            border-top: 1px solid #d8ddd6;
             padding-top: 12px;
         }
 
         .btn-add {
-            background: #f4f5f2;
-            color: var(--hay-charcoal);
-            border: 1px solid var(--hay-charcoal);
+            background: #f1f3f0;
+            color: var(--nordic-charcoal);
+            border: 1px solid var(--nordic-charcoal);
             padding: 6px 14px;
             border-radius: 20px;
             font-weight: 700;
@@ -440,42 +428,42 @@
         }
 
         .btn-add:hover {
-            background: var(--hay-yellow);
+            background: var(--nordic-yellow);
         }
 
         .btn-add.added {
-            background: var(--hay-yellow);
-            color: var(--hay-charcoal);
-            border-color: var(--hay-charcoal);
+            background: var(--nordic-yellow);
+            color: var(--nordic-charcoal);
+            border-color: var(--nordic-charcoal);
         }
 
         /* 동선 타임라인 결과 박스 */
         .itinerary-timeline {
             margin-top: 20px;
-            background: var(--hay-surface);
+            background: var(--card-bg);
             border-radius: var(--radius);
             padding: 24px;
             display: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 2px solid var(--hay-charcoal);
+            border: 2px solid var(--nordic-charcoal);
         }
 
         .day-group { margin-bottom: 20px; }
         .day-title {
             font-size: 1rem;
             font-weight: 700;
-            color: var(--hay-charcoal);
+            color: var(--nordic-charcoal);
             margin-bottom: 10px;
-            border-bottom: 2px solid var(--hay-charcoal);
+            border-bottom: 2px solid var(--nordic-charcoal);
             padding-bottom: 4px;
         }
 
         .timeline-step {
-            background: #f4f5f2;
+            background: #f1f3f0;
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 8px;
-            border-left: 4px solid var(--hay-charcoal);
+            border-left: 4px solid var(--nordic-green);
         }
 
         @media(max-width: 1024px) {
@@ -520,8 +508,8 @@
         <main class="main-content">
             
             <header class="bento-hero">
-                <h1>코펜하겐 X HAY 컬러 에디션</h1>
-                <p>북유럽 디자인 감성이 깃든 웜그레이 톤과 블록 컬러 조합 속에서 나만의 코펜하겐 여행을 다채롭게 채워보세요.</p>
+                <h1>코펜하겐 노딕 컬러 에디션</h1>
+                <p>북유럽 바다와 해변, 내추럴한 감성이 깃든 컬러 팔레트 속에서 나만의 코펜하겐 일정을 설계해 보세요.</p>
             </header>
 
             <section class="bento-map-card">
@@ -530,7 +518,7 @@
             </section>
 
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <h2 style="font-size: 1.4rem; color: var(--hay-charcoal); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
+                <h2 style="font-size: 1.4rem; color: var(--nordic-charcoal); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
                 <div class="filter-buttons">
                     <button class="filter-btn active" onclick="filterSelection('all', event)">전체보기</button>
                     <button class="filter-btn" onclick="filterSelection('landmark', event)">🏛️ 랜드마크</button>
@@ -808,7 +796,7 @@
 
             <!-- 최종 타임라인 결과 박스 -->
             <div class="itinerary-timeline" id="itineraryTimeline">
-                <h3 style="font-size: 1.2rem; color: var(--hay-charcoal); margin-bottom: 15px; font-weight: 700;"><i class="fa-solid fa-route"></i> 맞춤형 몇 박 며칠 타임라인 & 예산 가이드</h3>
+                <h3 style="font-size: 1.2rem; color: var(--nordic-charcoal); margin-bottom: 15px; font-weight: 700;"><i class="fa-solid fa-route"></i> 맞춤형 몇 박 며칠 타임라인 & 예산 가이드</h3>
                 <div id="timelineContent"></div>
             </div>
 
@@ -970,11 +958,11 @@
             let grandTotalDKK = totalTicketDKK + totalTransportDKK;
 
             let html = `
-                <div style="margin-bottom: 15px; padding: 12px; background: #f4f5f2; border-radius: 8px; border: 1px solid #dcdfd9;">
-                    <p style="font-weight: 700; color: var(--hay-charcoal);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 동선 및 예산 안내</p>
+                <div style="margin-bottom: 15px; padding: 12px; background: #f1f3f0; border-radius: 8px; border: 1px solid #d8ddd6;">
+                    <p style="font-weight: 700; color: var(--nordic-charcoal);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 동선 및 예산 안내</p>
                     <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">• 입장료 총액: ${totalTicketDKK} DKK (약 ${(totalTicketDKK * 200).toLocaleString()}원)</p>
                     <p style="font-size: 0.9rem; color: var(--text-light);">• 대중교통비 총액: ${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)</p>
-                    <p style="font-size: 0.95rem; font-weight: 700; color: var(--hay-burgundy); margin-top: 4px;">• 최종 예상 경비 합계: ${grandTotalDKK} DKK (약 ${(grandTotalDKK * 200).toLocaleString()}원)</p>
+                    <p style="font-size: 0.95rem; font-weight: 700; color: var(--nordic-green); margin-top: 4px;">• 최종 예상 경비 합계: ${grandTotalDKK} DKK (약 ${(grandTotalDKK * 200).toLocaleString()}원)</p>
                 </div>
             `;
             
@@ -988,7 +976,7 @@
                     html += `
                         <div class="timeline-step">
                             <strong>[${timeSlot}] ${item.title}</strong>
-                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">분류: ${item.category} | 입장료: ${item.ticketFee} DKK | <a href="${item.mapUrl}" target="_blank" style="color: var(--hay-burgundy); font-weight: 600;">길찾기</a></p>
+                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">분류: ${item.category} | 입장료: ${item.ticketFee} DKK | <a href="${item.mapUrl}" target="_blank" style="color: var(--nordic-green); font-weight: 600;">길찾기</a></p>
                         </div>
                     `;
                 });
