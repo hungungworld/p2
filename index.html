@@ -15,7 +15,7 @@
             --vintage-yellow: #f5e4b5;  /* 부드러운 연노랑 */
             --vintage-sky: #7a9eb1;     /* 포인트 스카이 블루 */
             --vintage-charcoal: #2d3136;/* 진한 차콜 */
-            --card-bg: rgba(255, 255, 255, 0.94); /* 배경 일러스트가 은은하게 비치는 고급 반투명 카드 */
+            --card-bg: rgba(255, 255, 255, 0.95); /* 배경 일러스트가 은은하게 비치는 반투명 카드 */
             --text-main: #2b2f33;
             --text-light: #5a626a;
             --radius: 16px;
@@ -30,19 +30,16 @@
         }
 
         body {
-            /* 업로드해주신 코펜하겐 풍경 사진을 배경으로 깔고, 수채화 일러스트 느낌의 빈티지 필터 효과 적용 */
+            /* 동일한 폴더에 있는 코펜하겐2.avif 파일을 배경으로 적용 */
             background: linear-gradient(rgba(30, 35, 40, 0.45), rgba(30, 35, 40, 0.55)), 
-                        url('코펜하겐_2.jpg') no-repeat center center fixed;
+                        url('코펜하겐2.avif') no-repeat center center fixed;
             background-size: cover;
-            filter: contrast(1.08) saturate(0.85) brightness(0.98);
             color: var(--text-main);
             display: flex;
             min-height: 100vh;
         }
 
-        /* 대시보드 내부 컨텐츠 영역은 필터 영향 없이 선명하게 유지 */
         .app-container {
-            filter: none;
             display: flex;
             width: 100%;
             max-width: 1600px;
@@ -527,7 +524,7 @@
             </section>
 
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <h2 style="font-size: 1.4rem; color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.6); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
+                <h2 style="font-size: 1.4rem; color: #ffffff; text-shadow: 0 2px 6px rgba(0,0,0,0.8); font-weight: 700;">✨ 카테고리별 추천 스팟</h2>
                 <div class="filter-buttons">
                     <button class="filter-btn active" onclick="filterSelection('all', event)">전체보기</button>
                     <button class="filter-btn" onclick="filterSelection('landmark', event)">🏛️ 랜드마크</button>
