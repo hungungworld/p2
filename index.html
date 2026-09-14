@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Copenhagen Guide</title>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts (Pretendard & 손글씨 Caveat 폰트 추가) & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --table-cream: #fbf9f5;     /* 따뜻한 화이트 식탁보 톤 */
-            --antique-green: #4a5d4e;   /* 클래식 세이지 그린 */
+            --antique-green: #4a5d4e;   /* 클래식 세이지 올리브 그린 */
             --warm-wood: #8c6d53;       /* 우드 체어 톤 */
             --silver-charcoal: #3a3f44; /* 실버 식기 및 모던 차콜 */
             --card-bg: rgba(255, 255, 255, 0.96); 
@@ -225,10 +225,10 @@
             gap: 24px;
         }
 
-        /* 벤토 헤더 카드 */
+        /* 벤토 헤더 카드 (올리브 컬러 및 손글씨 필기체 적용) */
         .bento-hero {
             background: linear-gradient(135deg, var(--table-cream) 0%, #eaf0e8 100%);
-            color: var(--silver-charcoal);
+            color: var(--antique-green);
             padding: 40px;
             border-radius: var(--radius);
             box-shadow: 0 15px 35px rgba(0,0,0,0.25);
@@ -236,10 +236,12 @@
         }
 
         .bento-hero h1 {
-            font-size: 2.2rem;
+            font-family: 'Caveat', cursive; /* 감성적인 손글씨 폰트 */
+            font-size: 3.2rem;
             font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            color: var(--antique-green); /* 올리브색 적용 */
         }
 
         .bento-hero p {
@@ -695,7 +697,7 @@
                     </div>
                 </div>
 
-                <!-- 5. 빈티지 샵 & 쇼핑 (추가) -->
+                <!-- 5. 빈티지 샵 & 쇼핑 -->
                 <div class="card" data-category="shopping" data-id="spot-8">
                     <div class="card-visual shop">
                         <span class="google-rating">★ 4.6</span>
@@ -762,7 +764,7 @@
                     </div>
                 </div>
 
-                <!-- 6. 레스토랑 & 카페 (추가) -->
+                <!-- 6. 레스토랑 & 카페 -->
                 <div class="card" data-category="food" data-id="spot-11">
                     <div class="card-visual food">
                         <span class="google-rating">★ 4.6</span>
@@ -1028,7 +1030,7 @@
                 <div style="margin-bottom: 15px; padding: 12px; background: #eaf1e7; border-radius: 8px; border: 1px solid var(--antique-green);">
                     <p style="font-weight: 700; color: var(--silver-charcoal);">✨ 총 ${nights}박 ${totalDays}일 맞춤 여행 동선 및 예산 안내</p>
                     <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">• 입장료 총액: ${totalTicketDKK} DKK (약 ${(totalTicketDKK * 200).toLocaleString()}원)</p>
-                    <p style="font-size: 0.9rem; color: var(--text-light); • 대중교통비 총액: ${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)</p>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">• 대중교통비 총액: ${totalTransportDKK} DKK (약 ${(totalTransportDKK * 200).toLocaleString()}원)</p>
                     <p style="font-size: 0.95rem; font-weight: 700; color: var(--antique-green); margin-top: 4px;">• 최종 예상 경비 합계: ${grandTotalDKK} DKK (약 ${(grandTotalDKK * 200).toLocaleString()}원)</p>
                 </div>
             `;
